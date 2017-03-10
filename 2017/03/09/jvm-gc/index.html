@@ -1,0 +1,1058 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="google-site-verification" content="owaYcsTPYbs0RP8wQXbdGRKodQd7P5pKp575oj2n0w8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+    <meta name="description" content="目前就职于狗场的一个移动方向小程序猴，热爱移动的各种知识，html5、ios、android就是任性的爱。" />
+
+
+
+  <meta name="keywords" content="java,基础,JVM,GC," />
+
+
+
+  <link rel="alternate" href="/atom.xml" title="code41's blog" type="application/atom+xml" />
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="GC概述1. 什么是GC
+Garbage Collection
+GC就是对垃圾进行回收
+GC是为了使开发人员不需要显式分配内存和回收内存，从而减少开发的难度
+但是，GC的实际效果却是…
+
+
+2. 哪些地方可以回收？哪些东西要回收？
+JVM基础-内存空间
+JVM规范下的结构示意图
+
+
+
+JVM内存示意图[JDK8持久代已经由元空间替换]
+
+
+
+
+
+回收哪些地方？
+方法区[回收条件苛刻很难回收，既回收">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GC概述">
+<meta property="og:url" content="http://blog.code41.me/2017/03/09/jvm-gc/index.html">
+<meta property="og:site_name" content="code41's blog">
+<meta property="og:description" content="GC概述1. 什么是GC
+Garbage Collection
+GC就是对垃圾进行回收
+GC是为了使开发人员不需要显式分配内存和回收内存，从而减少开发的难度
+但是，GC的实际效果却是…
+
+
+2. 哪些地方可以回收？哪些东西要回收？
+JVM基础-内存空间
+JVM规范下的结构示意图
+
+
+
+JVM内存示意图[JDK8持久代已经由元空间替换]
+
+
+
+
+
+回收哪些地方？
+方法区[回收条件苛刻很难回收，既回收">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488970912818.gif">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488944811319.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488946190664.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958141212.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958759088.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958705168.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958734183.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967461931.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967494306.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967461931.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967670110.png">
+<meta property="og:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488969530314.png">
+<meta property="og:updated_time" content="2017-03-10T03:11:26.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="GC概述">
+<meta name="twitter:description" content="GC概述1. 什么是GC
+Garbage Collection
+GC就是对垃圾进行回收
+GC是为了使开发人员不需要显式分配内存和回收内存，从而减少开发的难度
+但是，GC的实际效果却是…
+
+
+2. 哪些地方可以回收？哪些东西要回收？
+JVM基础-内存空间
+JVM规范下的结构示意图
+
+
+
+JVM内存示意图[JDK8持久代已经由元空间替换]
+
+
+
+
+
+回收哪些地方？
+方法区[回收条件苛刻很难回收，既回收">
+<meta name="twitter:image" content="http://om6u6x9f9.bkt.clouddn.com/markdown/1488970912818.gif">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> GC概述 | code41's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?bdc762c38b421f16915ab1748d916ec2";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">code41's blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              GC概述
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-03-09T09:37:23+08:00" content="2017-03-09">
+            2017-03-09
+          </time>
+        </span>
+
+        
+
+        
+          
+            <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2017/03/09/jvm-gc/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/09/jvm-gc/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h3 id="GC概述"><a href="#GC概述" class="headerlink" title="GC概述"></a>GC概述</h3><h4 id="1-什么是GC"><a href="#1-什么是GC" class="headerlink" title="1. 什么是GC"></a>1. 什么是GC</h4><ul>
+<li>Garbage Collection</li>
+<li>GC就是对垃圾进行回收</li>
+<li>GC是为了使开发人员不需要显式分配内存和回收内存，从而减少开发的难度</li>
+<li>但是，GC的实际效果却是…</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488970912818.gif" alt=""></li>
+</ul>
+<h4 id="2-哪些地方可以回收？哪些东西要回收？"><a href="#2-哪些地方可以回收？哪些东西要回收？" class="headerlink" title="2. 哪些地方可以回收？哪些东西要回收？"></a>2. 哪些地方可以回收？哪些东西要回收？</h4><ul>
+<li>JVM基础-内存空间<ul>
+<li>JVM规范下的结构示意图<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488944811319.png" alt=""></li>
+</ul>
+</li>
+<li>JVM内存示意图[JDK8持久代已经由元空间替换]<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488946190664.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>回收哪些地方？<ul>
+<li>方法区[回收条件苛刻很难回收，既回收的效果不佳]<ul>
+<li>对类型卸载</li>
+<li>常量池回收<ul>
+<li>废弃的常量[常量对象未被引用]</li>
+<li>无用的类<ul>
+<li>该类的所有实例已被回收，不存在实例</li>
+<li>加载该类的ClassLoader已经被回收</li>
+<li>该类对应的Class对象已经回收，无法通过反射引用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Java堆[主要的GC处理区域，怎么回收中详细介绍]<ul>
+<li>可回收70%~95%的空间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>哪些东西要回收？[如何定义垃圾]<ul>
+<li>定义算法<ul>
+<li>[反例]引用计数算法<ul>
+<li>被引用一次则计数+1</li>
+</ul>
+</li>
+<li>根搜索算法[GC Roots Tracing]<ul>
+<li>通过一系列GCRoots的对象为起始点，通过引用的向下搜索，可以与GCRoots的对象建立联系的都标记为可用对象，反之为不可用对象。</li>
+<li>GC Roots的对象<ul>
+<li>虚拟机栈中的引用对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用对象</li>
+<li>本地方法栈中的引用对象</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>示例图<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958141212.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>定义引用[Reference]<ul>
+<li>Strong Reference &gt; Soft Reference &gt; Weak Reference &gt; Phantom Reference</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-怎么回收？"><a href="#3-怎么回收？" class="headerlink" title="3. 怎么回收？"></a>3. 怎么回收？</h4><ul>
+<li>通过收集器回收</li>
+<li>收集器基于回收算法产生<ul>
+<li>收集算法<ul>
+<li>Mark-Sweep<ul>
+<li>内存中标记需要回收的内存空间，在标记完成后统一回收掉全部标记的内存空间，从而使得对象回收完成。</li>
+<li>缺点<ul>
+<li>效率问题：标记和清除的操作过程，效率都比较低。</li>
+<li>空间问题：清除后会产生大量不连续的内存碎片，导致大对象无可用的连续内存。</li>
+</ul>
+</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958759088.png" alt=""></li>
+</ul>
+</li>
+<li>Copying<ul>
+<li>可用内存划分为大小相等的两部分，当内存用完后，将存活对象所占用的内存空间复制到另外一半中，然后回收掉用完的一半。</li>
+<li>优点<ul>
+<li>只需要移动堆顶的指针就可以完成内存的切换，运行高效</li>
+<li>无内存碎片问题</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>内存只使用一半，浪费较大</li>
+</ul>
+</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958705168.png" alt=""></li>
+</ul>
+</li>
+<li>Mark-Compact<ul>
+<li>针对老年代的特点，让所有存活的对象向一端移动，清理边界以外的全部内存空间。</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958734183.png" alt=""></li>
+</ul>
+</li>
+<li>Generational Collection[分代收集]<ul>
+<li>根据存活周期不同将内存划分多块，然后针对不同不同周期（年代）对象使用不同的，最应当的垃圾回收算法。</li>
+<li>java堆中划分为新生代和老年代，针对新生代(每次垃圾回收，有大批对象死亡，)使用Copying算法，而针对老年代使用Mark-Compact算法。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>收集器的分类和细节<ul>
+<li>评判标准[有言在先]<ul>
+<li>吞吐量优先</li>
+<li>响应时间优先</li>
+</ul>
+</li>
+<li>Serial收集器<ul>
+<li>新生代收集使用</li>
+<li>复制算法</li>
+<li>单线程，适合于单核</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967461931.png" alt=""></li>
+</ul>
+</li>
+<li>ParNew收集器<ul>
+<li>新生代收集使用</li>
+<li>复制算法</li>
+<li>Server模式首选收集器</li>
+<li>新生代回收采用多线程处理</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967494306.png" alt=""></li>
+</ul>
+</li>
+<li>Parallel Scavenge收集器<ul>
+<li>新生代收集使用</li>
+<li>复制算法</li>
+<li>新生代回收采用多线程处理</li>
+<li>可控制吞吐量–与ParNew收集器的唯一区别[吞吐量=运行用户代码时间/(运行用户代码时间 + GC回收停顿时间)]</li>
+<li>无法与CMS收集器搭配使用</li>
+</ul>
+</li>
+<li>Serial Old收集器<ul>
+<li>老生代收集使用</li>
+<li>标记整理算法</li>
+<li>单线程</li>
+<li>作为CMS收集器出错后的备选方案</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967461931.png" alt=""></li>
+</ul>
+</li>
+<li>Parallel Old收集器<ul>
+<li>老生代收集使用</li>
+<li>标记整理算法</li>
+<li>多线程整理</li>
+<li>搭配Parallel Scavenge收集器的老生代收集使用</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967670110.png" alt=""></li>
+</ul>
+</li>
+<li>CMS(Concurrent Mark Sweep)收集器<ul>
+<li>老生代收集使用</li>
+<li>与用户线程共同并发标记和并发清理</li>
+<li>标记清除算法</li>
+<li>优点<ul>
+<li>并发收集</li>
+<li>低停顿</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>产生碎片</li>
+<li>无法处理浮动垃圾(并发标记过程中用户产生的垃圾)</li>
+<li>占用用户线程的CPU资源</li>
+</ul>
+</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488969530314.png" alt=""></li>
+</ul>
+</li>
+<li>G1[Garbage First]<ul>
+<li>基本要求<ul>
+<li>多核CPU</li>
+<li>大内存</li>
+</ul>
+</li>
+<li>基于Mark-Compact算法[不会产生碎片]</li>
+<li>垃圾收集的消耗时间在毫秒级别</li>
+<li>划分多个大小固定的区域(Region)<ul>
+<li>大小范围为1M~32M</li>
+<li>Region的类型<ul>
+<li>Eden</li>
+<li>Survivor</li>
+<li>Old</li>
+</ul>
+</li>
+<li>年代类型<ul>
+<li>新生代</li>
+<li>老生代</li>
+</ul>
+</li>
+<li>GC<ul>
+<li>YoungGC<ul>
+<li>新对象进入Eden区 -&gt; 存活对象拷贝到Survivor区 -&gt; 存活时间达到年龄阈值时，对象晋升到Old区</li>
+</ul>
+</li>
+<li>FullGC<ul>
+<li>初始并行阶段 -&gt; Root区扫描 -&gt; 并行标记 -&gt; 重标记 -&gt; 清除 -&gt; 复制</li>
+<li>初始并行阶段（Initial Marking Phase） <ul>
+<li>属于Young GC范畴，是stop-the-world活动。对持有老年代对象引用的Survivor区（Root区）进行标记。</li>
+</ul>
+</li>
+<li>Root区扫描（Root Region Scanning） <ul>
+<li>扫描Survivor区中的老年代对象引用，该阶段发生在应用运行时，必须在Young GC前完成。</li>
+</ul>
+</li>
+<li>并行标记（Concurrent Marking） <ul>
+<li>找出整个堆中存活的对象，对于空区标记为“X”。该阶段发生在应用运行时，同时该阶段活动会被Young GC打断。</li>
+</ul>
+</li>
+<li>重标记（Remark） <ul>
+<li>清除空区，重计算所有区的存活状态（liveness），是stop-the-world活动。</li>
+</ul>
+</li>
+<li>清除（Cleanup）<ul>
+<li>选择出存活状态低的区进行收集。</li>
+<li>计算存活对象和空区，是stop-the-world活动。</li>
+<li>更新记录表，是stop-the-world活动。</li>
+<li>重置空区，将其加入空闲列表，是并行活动。</li>
+</ul>
+</li>
+<li>复制（Copying）<ul>
+<li>该阶段是stop-the-world活动，负责将存活对象复制到新的未使用的区。</li>
+<li>可以发生在年轻代区，日志记录为[GC pause (young)]。</li>
+<li>也可以同时发生在年轻代区和老年代区，日志记录为[GC Pause (mixed)]。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>不同收集器的搭配<ul>
+<li>-XX:+UseSerialGC|新生代使用Serial，老生代使用Serial Old</li>
+<li>-XX:+UseParNewGC|新生代使用ParNew，老生代使用Serial Old</li>
+<li>-XX:+UseConcMarkSweepGC|新生代使用ParNew，老生代使用CMS，老生代后备使用Serial Old</li>
+<li>-XX:+UseParallelGC|新生代使用Parallel Scavenge，老生代使用Serial Old</li>
+<li>-XX:+UseParallelOldGC|新生代使用Parallel Scavenge，老生代使用Parallel Old</li>
+<li>-XX:+UseG1GC|用G1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-内存分配与回收策略"><a href="#4-内存分配与回收策略" class="headerlink" title="4. 内存分配与回收策略"></a>4. 内存分配与回收策略</h4><ul>
+<li>GC触发条件&amp;实例验证<ul>
+<li>基础<ul>
+<li>-xx:+PrintGCdetails 可以详细了解GC中的变化。</li>
+<li>-XX:+PrintGCTimeStamps 可以了解这些垃圾收集发生的时间，自JVM启动以后以秒计量。</li>
+<li>-XX:+PrintGCApplicationStoppedTime 输出GC造成应用暂停的时间</li>
+<li>-XX:+PrintGCDateStamps GC发生的时间信息</li>
+<li>-xx:+PrintHeapAtGC 了解堆的更详细的信息。</li>
+<li>-Xloggc:/tmp/logs/gc.log gc日志产生的路径</li>
+</ul>
+</li>
+<li>分析<a href="http://mprofiler.stable.meili-inc.com/" target="_blank" rel="external">内部在线分析工具（包含常用命令）</a></li>
+<li>GC触发条件<ul>
+<li>YoungGC/MinorGC<ul>
+<li>Eden空间不足以分配内存给新的对象</li>
+</ul>
+</li>
+<li>FullGC<ul>
+<li>老生代空间不足，新生代对象或者大对象无法转入老生代</li>
+<li>Perm Gen被占满<ul>
+<li>采用CMS</li>
+<li>加大Perm Gen</li>
+</ul>
+</li>
+<li>CMS GC出现promotion failed和concurrent mode failure<ul>
+<li>增大survivor空间</li>
+<li>增大老生代空间</li>
+<li>调低触发GC的比率</li>
+</ul>
+</li>
+<li>统计到的YoungGC晋升的平均大小大于老生代剩余空间大小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>汇总<ul>
+<li>对象优先在Eden区分配</li>
+<li>大对象直接进入老老年代<ul>
+<li>大对象直接进入老年代的目的是避免Eden和Survivor的互相拷贝大对象</li>
+</ul>
+</li>
+<li>长期存活对象将进入老年代<ul>
+<li>避免短存活的大对象<ul>
+<li>大对象一般需要大的连续空间，如果没有会触发GC操作，因此避免短存活期的大对象存在</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>动态对象年龄判定</li>
+<li>空间分配担保</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>启发<ul>
+<li>避免短存活的大对象<ul>
+<li>大对象一般需要大的连续空间，如果没有会触发GC操作，因此避免短存活期的大对象存在</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-扩展"><a href="#5-扩展" class="headerlink" title="5. 扩展"></a>5. 扩展</h4><ul>
+<li>Real-Time JDK<ul>
+<li>新的内存管理机制<ul>
+<li>Immortal内存区域<ul>
+<li>Immortal内存区域用于保留永久的对象，这些对象仅在应用结束运行时才会释放内存，这个最典型的需求场景莫过于缓存了 </li>
+</ul>
+</li>
+<li>Scoped内存区域<ul>
+<li>Scoped内存区域用于保留临时的对象，位于scope中的对象在scope退出时，这些对象所占用的内存会被直接回收</li>
+</ul>
+</li>
+<li>Immortal内存区域和Scoped内存区域均不受GC管理，因此基于这两个内存区域来编写的应用完全不用担心GC会造成暂停的现象</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>JVMs<a href="https://www.zhihu.com/question/29265430?sort=created" target="_blank" rel="external">参考1</a><a href="https://en.wikipedia.org/wiki/Comparison_of_Java_virtual_machines" target="_blank" rel="external">参考2</a><ul>
+<li>HotSpot</li>
+<li>IBM J9</li>
+<li>Zing JVM</li>
+</ul>
+</li>
+</ul>
+<h4 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h4><ul>
+<li>这些回收技术都是越来越好用，但这些并不能成为大家不优化现有代码的原因，我们需要为将来留有余地</li>
+</ul>
+<h4 id="7-流程图文件"><a href="#7-流程图文件" class="headerlink" title="7. 流程图文件"></a>7. 流程图文件</h4><p><a href="http://om6u6x9f9.bkt.clouddn.com/fileGC4JVM.key" target="_blank" rel="external">流程图</a></p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java/" rel="tag">#java</a>
+          
+            <a href="/tags/基础/" rel="tag">#基础</a>
+          
+            <a href="/tags/JVM/" rel="tag">#JVM</a>
+          
+            <a href="/tags/GC/" rel="tag">#GC</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/26/reentrantlock/" rel="next">并发锁ReentrantLock的优缺点</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+              <div class="ds-thread" data-thread-key="2017/03/09/jvm-gc/"
+                   data-title="GC概述" data-url="http://blog.code41.me/2017/03/09/jvm-gc/">
+              </div>
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="https://avatars0.githubusercontent.com/u/5361460?v=3&u=fba7111af267cba8fa0eab29a88caf7b0fa34b4a&s=140" alt="code41" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">code41</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description">目前就职于狗场的一个移动方向小程序猴，热爱移动的各种知识，html5、ios、android就是任性的爱。</p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">17</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">32</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="menu-item-icon icon-next-feed"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/naruto900814" target="_blank">github</a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="mailto:lsy814@gmail.com" target="_blank">mail</a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#GC概述"><span class="nav-number">1.</span> <span class="nav-text">GC概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-什么是GC"><span class="nav-number">1.1.</span> <span class="nav-text">1. 什么是GC</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-哪些地方可以回收？哪些东西要回收？"><span class="nav-number">1.2.</span> <span class="nav-text">2. 哪些地方可以回收？哪些东西要回收？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-怎么回收？"><span class="nav-number">1.3.</span> <span class="nav-text">3. 怎么回收？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-内存分配与回收策略"><span class="nav-number">1.4.</span> <span class="nav-text">4. 内存分配与回收策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-扩展"><span class="nav-number">1.5.</span> <span class="nav-text">5. 扩展</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-总结"><span class="nav-number">1.6.</span> <span class="nav-text">6. 总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-流程图文件"><span class="nav-number">1.7.</span> <span class="nav-text">7. 流程图文件</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">code41</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"code41"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+    
+     
+
+    
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

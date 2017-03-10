@@ -1,0 +1,1409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>code41&#39;s blog</title>
+  <subtitle>一个热爱瞎折腾的程序猴</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://blog.code41.me/"/>
+  <updated>2017-03-10T03:11:26.000Z</updated>
+  <id>http://blog.code41.me/</id>
+  
+  <author>
+    <name>code41</name>
+    <email>lsy814@gmail.com</email>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>GC概述</title>
+    <link href="http://blog.code41.me/2017/03/09/jvm-gc/"/>
+    <id>http://blog.code41.me/2017/03/09/jvm-gc/</id>
+    <published>2017-03-09T01:37:23.000Z</published>
+    <updated>2017-03-10T03:11:26.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="GC概述"><a href="#GC概述" class="headerlink" title="GC概述"></a>GC概述</h3><h4 id="1-什么是GC"><a href="#1-什么是GC" class="headerlink" title="1. 什么是GC"></a>1. 什么是GC</h4><ul>
+<li>Garbage Collection</li>
+<li>GC就是对垃圾进行回收</li>
+<li>GC是为了使开发人员不需要显式分配内存和回收内存，从而减少开发的难度</li>
+<li>但是，GC的实际效果却是…</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488970912818.gif" alt=""></li>
+</ul>
+<h4 id="2-哪些地方可以回收？哪些东西要回收？"><a href="#2-哪些地方可以回收？哪些东西要回收？" class="headerlink" title="2. 哪些地方可以回收？哪些东西要回收？"></a>2. 哪些地方可以回收？哪些东西要回收？</h4><ul>
+<li>JVM基础-内存空间<ul>
+<li>JVM规范下的结构示意图<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488944811319.png" alt=""></li>
+</ul>
+</li>
+<li>JVM内存示意图[JDK8持久代已经由元空间替换]<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488946190664.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>回收哪些地方？<ul>
+<li>方法区[回收条件苛刻很难回收，既回收的效果不佳]<ul>
+<li>对类型卸载</li>
+<li>常量池回收<ul>
+<li>废弃的常量[常量对象未被引用]</li>
+<li>无用的类<ul>
+<li>该类的所有实例已被回收，不存在实例</li>
+<li>加载该类的ClassLoader已经被回收</li>
+<li>该类对应的Class对象已经回收，无法通过反射引用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Java堆[主要的GC处理区域，怎么回收中详细介绍]<ul>
+<li>可回收70%~95%的空间</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>哪些东西要回收？[如何定义垃圾]<ul>
+<li>定义算法<ul>
+<li>[反例]引用计数算法<ul>
+<li>被引用一次则计数+1</li>
+</ul>
+</li>
+<li>根搜索算法[GC Roots Tracing]<ul>
+<li>通过一系列GCRoots的对象为起始点，通过引用的向下搜索，可以与GCRoots的对象建立联系的都标记为可用对象，反之为不可用对象。</li>
+<li>GC Roots的对象<ul>
+<li>虚拟机栈中的引用对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用对象</li>
+<li>本地方法栈中的引用对象</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>示例图<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958141212.png" alt=""></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>定义引用[Reference]<ul>
+<li>Strong Reference &gt; Soft Reference &gt; Weak Reference &gt; Phantom Reference</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-怎么回收？"><a href="#3-怎么回收？" class="headerlink" title="3. 怎么回收？"></a>3. 怎么回收？</h4><ul>
+<li>通过收集器回收</li>
+<li>收集器基于回收算法产生<ul>
+<li>收集算法<ul>
+<li>Mark-Sweep<ul>
+<li>内存中标记需要回收的内存空间，在标记完成后统一回收掉全部标记的内存空间，从而使得对象回收完成。</li>
+<li>缺点<ul>
+<li>效率问题：标记和清除的操作过程，效率都比较低。</li>
+<li>空间问题：清除后会产生大量不连续的内存碎片，导致大对象无可用的连续内存。</li>
+</ul>
+</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958759088.png" alt=""></li>
+</ul>
+</li>
+<li>Copying<ul>
+<li>可用内存划分为大小相等的两部分，当内存用完后，将存活对象所占用的内存空间复制到另外一半中，然后回收掉用完的一半。</li>
+<li>优点<ul>
+<li>只需要移动堆顶的指针就可以完成内存的切换，运行高效</li>
+<li>无内存碎片问题</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>内存只使用一半，浪费较大</li>
+</ul>
+</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958705168.png" alt=""></li>
+</ul>
+</li>
+<li>Mark-Compact<ul>
+<li>针对老年代的特点，让所有存活的对象向一端移动，清理边界以外的全部内存空间。</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488958734183.png" alt=""></li>
+</ul>
+</li>
+<li>Generational Collection[分代收集]<ul>
+<li>根据存活周期不同将内存划分多块，然后针对不同不同周期（年代）对象使用不同的，最应当的垃圾回收算法。</li>
+<li>java堆中划分为新生代和老年代，针对新生代(每次垃圾回收，有大批对象死亡，)使用Copying算法，而针对老年代使用Mark-Compact算法。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>收集器的分类和细节<ul>
+<li>评判标准[有言在先]<ul>
+<li>吞吐量优先</li>
+<li>响应时间优先</li>
+</ul>
+</li>
+<li>Serial收集器<ul>
+<li>新生代收集使用</li>
+<li>复制算法</li>
+<li>单线程，适合于单核</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967461931.png" alt=""></li>
+</ul>
+</li>
+<li>ParNew收集器<ul>
+<li>新生代收集使用</li>
+<li>复制算法</li>
+<li>Server模式首选收集器</li>
+<li>新生代回收采用多线程处理</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967494306.png" alt=""></li>
+</ul>
+</li>
+<li>Parallel Scavenge收集器<ul>
+<li>新生代收集使用</li>
+<li>复制算法</li>
+<li>新生代回收采用多线程处理</li>
+<li>可控制吞吐量–与ParNew收集器的唯一区别[吞吐量=运行用户代码时间/(运行用户代码时间 + GC回收停顿时间)]</li>
+<li>无法与CMS收集器搭配使用</li>
+</ul>
+</li>
+<li>Serial Old收集器<ul>
+<li>老生代收集使用</li>
+<li>标记整理算法</li>
+<li>单线程</li>
+<li>作为CMS收集器出错后的备选方案</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967461931.png" alt=""></li>
+</ul>
+</li>
+<li>Parallel Old收集器<ul>
+<li>老生代收集使用</li>
+<li>标记整理算法</li>
+<li>多线程整理</li>
+<li>搭配Parallel Scavenge收集器的老生代收集使用</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488967670110.png" alt=""></li>
+</ul>
+</li>
+<li>CMS(Concurrent Mark Sweep)收集器<ul>
+<li>老生代收集使用</li>
+<li>与用户线程共同并发标记和并发清理</li>
+<li>标记清除算法</li>
+<li>优点<ul>
+<li>并发收集</li>
+<li>低停顿</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>产生碎片</li>
+<li>无法处理浮动垃圾(并发标记过程中用户产生的垃圾)</li>
+<li>占用用户线程的CPU资源</li>
+</ul>
+</li>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1488969530314.png" alt=""></li>
+</ul>
+</li>
+<li>G1[Garbage First]<ul>
+<li>基本要求<ul>
+<li>多核CPU</li>
+<li>大内存</li>
+</ul>
+</li>
+<li>基于Mark-Compact算法[不会产生碎片]</li>
+<li>垃圾收集的消耗时间在毫秒级别</li>
+<li>划分多个大小固定的区域(Region)<ul>
+<li>大小范围为1M~32M</li>
+<li>Region的类型<ul>
+<li>Eden</li>
+<li>Survivor</li>
+<li>Old</li>
+</ul>
+</li>
+<li>年代类型<ul>
+<li>新生代</li>
+<li>老生代</li>
+</ul>
+</li>
+<li>GC<ul>
+<li>YoungGC<ul>
+<li>新对象进入Eden区 -&gt; 存活对象拷贝到Survivor区 -&gt; 存活时间达到年龄阈值时，对象晋升到Old区</li>
+</ul>
+</li>
+<li>FullGC<ul>
+<li>初始并行阶段 -&gt; Root区扫描 -&gt; 并行标记 -&gt; 重标记 -&gt; 清除 -&gt; 复制</li>
+<li>初始并行阶段（Initial Marking Phase） <ul>
+<li>属于Young GC范畴，是stop-the-world活动。对持有老年代对象引用的Survivor区（Root区）进行标记。</li>
+</ul>
+</li>
+<li>Root区扫描（Root Region Scanning） <ul>
+<li>扫描Survivor区中的老年代对象引用，该阶段发生在应用运行时，必须在Young GC前完成。</li>
+</ul>
+</li>
+<li>并行标记（Concurrent Marking） <ul>
+<li>找出整个堆中存活的对象，对于空区标记为“X”。该阶段发生在应用运行时，同时该阶段活动会被Young GC打断。</li>
+</ul>
+</li>
+<li>重标记（Remark） <ul>
+<li>清除空区，重计算所有区的存活状态（liveness），是stop-the-world活动。</li>
+</ul>
+</li>
+<li>清除（Cleanup）<ul>
+<li>选择出存活状态低的区进行收集。</li>
+<li>计算存活对象和空区，是stop-the-world活动。</li>
+<li>更新记录表，是stop-the-world活动。</li>
+<li>重置空区，将其加入空闲列表，是并行活动。</li>
+</ul>
+</li>
+<li>复制（Copying）<ul>
+<li>该阶段是stop-the-world活动，负责将存活对象复制到新的未使用的区。</li>
+<li>可以发生在年轻代区，日志记录为[GC pause (young)]。</li>
+<li>也可以同时发生在年轻代区和老年代区，日志记录为[GC Pause (mixed)]。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>不同收集器的搭配<ul>
+<li>-XX:+UseSerialGC|新生代使用Serial，老生代使用Serial Old</li>
+<li>-XX:+UseParNewGC|新生代使用ParNew，老生代使用Serial Old</li>
+<li>-XX:+UseConcMarkSweepGC|新生代使用ParNew，老生代使用CMS，老生代后备使用Serial Old</li>
+<li>-XX:+UseParallelGC|新生代使用Parallel Scavenge，老生代使用Serial Old</li>
+<li>-XX:+UseParallelOldGC|新生代使用Parallel Scavenge，老生代使用Parallel Old</li>
+<li>-XX:+UseG1GC|用G1</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-内存分配与回收策略"><a href="#4-内存分配与回收策略" class="headerlink" title="4. 内存分配与回收策略"></a>4. 内存分配与回收策略</h4><ul>
+<li>GC触发条件&amp;实例验证<ul>
+<li>基础<ul>
+<li>-xx:+PrintGCdetails 可以详细了解GC中的变化。</li>
+<li>-XX:+PrintGCTimeStamps 可以了解这些垃圾收集发生的时间，自JVM启动以后以秒计量。</li>
+<li>-XX:+PrintGCApplicationStoppedTime 输出GC造成应用暂停的时间</li>
+<li>-XX:+PrintGCDateStamps GC发生的时间信息</li>
+<li>-xx:+PrintHeapAtGC 了解堆的更详细的信息。</li>
+<li>-Xloggc:/tmp/logs/gc.log gc日志产生的路径</li>
+</ul>
+</li>
+<li>分析<a href="http://mprofiler.stable.meili-inc.com/" target="_blank" rel="external">内部在线分析工具（包含常用命令）</a></li>
+<li>GC触发条件<ul>
+<li>YoungGC/MinorGC<ul>
+<li>Eden空间不足以分配内存给新的对象</li>
+</ul>
+</li>
+<li>FullGC<ul>
+<li>老生代空间不足，新生代对象或者大对象无法转入老生代</li>
+<li>Perm Gen被占满<ul>
+<li>采用CMS</li>
+<li>加大Perm Gen</li>
+</ul>
+</li>
+<li>CMS GC出现promotion failed和concurrent mode failure<ul>
+<li>增大survivor空间</li>
+<li>增大老生代空间</li>
+<li>调低触发GC的比率</li>
+</ul>
+</li>
+<li>统计到的YoungGC晋升的平均大小大于老生代剩余空间大小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>汇总<ul>
+<li>对象优先在Eden区分配</li>
+<li>大对象直接进入老老年代<ul>
+<li>大对象直接进入老年代的目的是避免Eden和Survivor的互相拷贝大对象</li>
+</ul>
+</li>
+<li>长期存活对象将进入老年代<ul>
+<li>避免短存活的大对象<ul>
+<li>大对象一般需要大的连续空间，如果没有会触发GC操作，因此避免短存活期的大对象存在</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>动态对象年龄判定</li>
+<li>空间分配担保</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>启发<ul>
+<li>避免短存活的大对象<ul>
+<li>大对象一般需要大的连续空间，如果没有会触发GC操作，因此避免短存活期的大对象存在</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-扩展"><a href="#5-扩展" class="headerlink" title="5. 扩展"></a>5. 扩展</h4><ul>
+<li>Real-Time JDK<ul>
+<li>新的内存管理机制<ul>
+<li>Immortal内存区域<ul>
+<li>Immortal内存区域用于保留永久的对象，这些对象仅在应用结束运行时才会释放内存，这个最典型的需求场景莫过于缓存了 </li>
+</ul>
+</li>
+<li>Scoped内存区域<ul>
+<li>Scoped内存区域用于保留临时的对象，位于scope中的对象在scope退出时，这些对象所占用的内存会被直接回收</li>
+</ul>
+</li>
+<li>Immortal内存区域和Scoped内存区域均不受GC管理，因此基于这两个内存区域来编写的应用完全不用担心GC会造成暂停的现象</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>JVMs<a href="https://www.zhihu.com/question/29265430?sort=created" target="_blank" rel="external">参考1</a><a href="https://en.wikipedia.org/wiki/Comparison_of_Java_virtual_machines" target="_blank" rel="external">参考2</a><ul>
+<li>HotSpot</li>
+<li>IBM J9</li>
+<li>Zing JVM</li>
+</ul>
+</li>
+</ul>
+<h4 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h4><ul>
+<li>这些回收技术都是越来越好用，但这些并不能成为大家不优化现有代码的原因，我们需要为将来留有余地</li>
+</ul>
+<h4 id="7-流程图文件"><a href="#7-流程图文件" class="headerlink" title="7. 流程图文件"></a>7. 流程图文件</h4><p><a href="http://om6u6x9f9.bkt.clouddn.com/fileGC4JVM.key" target="_blank" rel="external">流程图</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;GC概述&quot;&gt;&lt;a href=&quot;#GC概述&quot; class=&quot;headerlink&quot; title=&quot;GC概述&quot;&gt;&lt;/a&gt;GC概述&lt;/h3&gt;&lt;h4 id=&quot;1-什么是GC&quot;&gt;&lt;a href=&quot;#1-什么是GC&quot; class=&quot;headerlink&quot; title=&quot;1. 
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="JVM" scheme="http://blog.code41.me/tags/JVM/"/>
+    
+      <category term="GC" scheme="http://blog.code41.me/tags/GC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>并发锁ReentrantLock的优缺点</title>
+    <link href="http://blog.code41.me/2016/05/26/reentrantlock/"/>
+    <id>http://blog.code41.me/2016/05/26/reentrantlock/</id>
+    <published>2016-05-26T12:50:04.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="ReentrantLock的优点"><a href="#ReentrantLock的优点" class="headerlink" title="ReentrantLock的优点"></a>ReentrantLock的优点</h2><ul>
+<li>ReentrantLock可以创建多个，对同一线程中的不同条件进行lock操作，而synchronized只能锁一个对象或者方法块。</li>
+<li>ReentrantLock可以控制线程得到锁的顺序，达到公平锁；同时也可以像synchronized一样非公平分配。</li>
+<li>ReentrantLock可以查看锁的状态，是否被锁上。</li>
+<li>ReentrantLock可以查看当前有多少线程在查看锁。</li>
+</ul>
+<h2 id="ReentrantLock的缺点"><a href="#ReentrantLock的缺点" class="headerlink" title="ReentrantLock的缺点"></a>ReentrantLock的缺点</h2><ul>
+<li>需要引入新的包。</li>
+<li>需要自己在finally中控制锁的释放。</li>
+<li>synchronized可以作为关键字在方法声明中使用，比ReentrantLock来说减少了嵌套。</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;ReentrantLock的优点&quot;&gt;&lt;a href=&quot;#ReentrantLock的优点&quot; class=&quot;headerlink&quot; title=&quot;ReentrantLock的优点&quot;&gt;&lt;/a&gt;ReentrantLock的优点&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;Reentran
+    
+    </summary>
+    
+      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="并发包" scheme="http://blog.code41.me/tags/%E5%B9%B6%E5%8F%91%E5%8C%85/"/>
+    
+      <category term="ReentrantLock" scheme="http://blog.code41.me/tags/ReentrantLock/"/>
+    
+      <category term="多线程" scheme="http://blog.code41.me/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>不可变类的变量声明</title>
+    <link href="http://blog.code41.me/2016/05/24/variable-of-immutable-class/"/>
+    <id>http://blog.code41.me/2016/05/24/variable-of-immutable-class/</id>
+    <published>2016-05-24T07:01:07.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="不可变类变量的声明的两种方式对比"><a href="#不可变类变量的声明的两种方式对比" class="headerlink" title="不可变类变量的声明的两种方式对比"></a>不可变类变量的声明的两种方式对比</h2><p>主要从两个角度进行对比，一种是包装类，一种是String类。</p>
+<h3 id="包装类"><a href="#包装类" class="headerlink" title="包装类"></a>包装类</h3><blockquote>
+<p>包装类中只有Integer类涉及到一些特殊的方法区缓存问题，Integer会缓存-128至127的数字到方法区，而通过Integer.valueOf()方法声明的该区间内的变量都只是将指针指到方法区的变量上。</p>
+</blockquote>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">Integer intA = 11;</div><div class="line">Integer intB = new Integer(11);</div><div class="line">// return false</div><div class="line">System.out.println(intA == intB);</div><div class="line">// return true</div><div class="line">System.out.println(intA.equals(intB));</div><div class="line"></div><div class="line">Integer intC = 128;</div><div class="line">Integer intD = 128;</div><div class="line">// return false</div><div class="line">System.out.println(intC == intD);</div><div class="line"></div><div class="line">Integer intE = 127;</div><div class="line">Integer intF = 127;</div><div class="line">// return true</div><div class="line">System.out.println(intE == intF);</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>intA变量的声明方式会被优化为Integer.valueOf(11)，所以intA的变量是指向方法区上127的指针；</li>
+<li>而intB变量是在堆上新声明对象，故两个对象无法在==中返回true；</li>
+<li>而equals判断的是两个变量中的value是否相等，并非对象是否指向一个；</li>
+<li>由于Integer的缓存区间是在-128至127之间，故intE==intF返回true，而intC == intD返回false。</li>
+</ul>
+<h3 id="String类"><a href="#String类" class="headerlink" title="String类"></a>String类</h3><blockquote>
+<p>String类在声明变量的时候和Integer包装类类似，String声明对象会产生两种效果，一种会创建到方法区中，一种会在堆上创建。</p>
+</blockquote>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">String a = new String(&quot;a&quot;);</div><div class="line">String c = &quot;a&quot;;</div><div class="line">String b = a.intern();</div><div class="line">// return false</div><div class="line">System.out.println(c == a);</div><div class="line">// return true</div><div class="line">System.out.println(c == b);</div><div class="line">// return false</div><div class="line">System.out.println(a == b);</div></pre></td></tr></table></figure>
+</code></pre><ul>
+<li>变量a会在堆中创建对象，变量c会在方法区中创建，变量b指针指向，在方法区中，和变量a值一样的变量指针；</li>
+<li>equals方法只判断value值是否相等，不判断指针指向的是否为同一个对象，故equals方法中变量都是一样的。</li>
+</ul>
+<h3 id="其他包装类"><a href="#其他包装类" class="headerlink" title="其他包装类"></a>其他包装类</h3><blockquote>
+<p>Double包装类是双精度数字的包装类，故没有缓存。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;不可变类变量的声明的两种方式对比&quot;&gt;&lt;a href=&quot;#不可变类变量的声明的两种方式对比&quot; class=&quot;headerlink&quot; title=&quot;不可变类变量的声明的两种方式对比&quot;&gt;&lt;/a&gt;不可变类变量的声明的两种方式对比&lt;/h2&gt;&lt;p&gt;主要从两个角度进行对比，一种
+    
+    </summary>
+    
+      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>排序算法的时间复杂度</title>
+    <link href="http://blog.code41.me/2016/05/24/the-time-complexity-of-the-sorted-algorithm/"/>
+    <id>http://blog.code41.me/2016/05/24/the-time-complexity-of-the-sorted-algorithm/</id>
+    <published>2016-05-24T03:23:44.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<p><img src="/2016/05/24/the-time-complexity-of-the-sorted-algorithm/sort-algorithm.jpg" alt="排序算法的时间复杂度"></p>
+<h2 id="基本算法的时间复杂度"><a href="#基本算法的时间复杂度" class="headerlink" title="基本算法的时间复杂度"></a>基本算法的时间复杂度</h2><h2 id="红黑树等的时间复杂度"><a href="#红黑树等的时间复杂度" class="headerlink" title="红黑树等的时间复杂度"></a>红黑树等的时间复杂度</h2>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;img src=&quot;/2016/05/24/the-time-complexity-of-the-sorted-algorithm/sort-algorithm.jpg&quot; alt=&quot;排序算法的时间复杂度&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;基本算法的时间复杂度&quot;&gt;&lt;a href=&quot;
+    
+    </summary>
+    
+      <category term="算法" scheme="http://blog.code41.me/categories/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/%E7%AE%97%E6%B3%95/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="算法" scheme="http://blog.code41.me/tags/%E7%AE%97%E6%B3%95/"/>
+    
+      <category term="排序" scheme="http://blog.code41.me/tags/%E6%8E%92%E5%BA%8F/"/>
+    
+      <category term="时间复杂度" scheme="http://blog.code41.me/tags/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>java中String、StringBuffer和StringBuilder的区别</title>
+    <link href="http://blog.code41.me/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/"/>
+    <id>http://blog.code41.me/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/</id>
+    <published>2016-05-24T03:12:44.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<ol>
+<li><p>可变和不可变</p>
+<ul>
+<li><p>String类中使用字符数组保存字符串，被final修饰，所以String对象是不可变类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">private final char value[];</div></pre></td></tr></table></figure>
+</li>
+<li><p>StringBuilder和StringBuffer都是继承于AbstractStringBuilder类，也是通过使用字符数组来保存字符串，但是没有final修饰，故可以通过append方法进行字符串的拼接操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">char[] value;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>是否线程安全</p>
+<ul>
+<li>String中对象是不可变的，所以可以理解为常量，是 <strong>线程安全的</strong></li>
+<li><p>AbstractStringBuilder是StringBuilder与StringBuffer的公共父类，定义了一些字符串的基本操作，如expandCapacity、append、insert、indexOf等公共方法。<strong>StringBuffer对方法加了同步锁或者对调用的方法加了同步锁，所以是线程安全的。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">public synchronized StringBuffer append(CharSequence s, int start, int end)</div><div class="line">&#123;</div><div class="line">    super.append(s, start, end);</div><div class="line">    return this;</div><div class="line">&#125;</div><div class="line"></div><div class="line">public synchronized StringBuffer reverse() &#123;</div><div class="line">    super.reverse();</div><div class="line">    return this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>StringBuilder并没有对方法进行加同步锁，所以是非线程安全的。</p>
+</li>
+</ul>
+</li>
+<li><p>StringBuffer和StringBuilder的共同点</p>
+<ul>
+<li>StringBuilder与StringBuffer有公共父类AbstractStringBuilder(抽象类)。</li>
+<li>StringBuilder和StringBuffer的方法都会调用AbstractStringBuilder中的公共方法。</li>
+<li>StringBuffer的方法会使用synchronized关键字，保证同步。</li>
+<li>程序如果不是多线程，使用StringBuilder效率会更高。</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>JDK6之后，String的拼接会自动优化为StringBuilder。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;ol&gt;
+&lt;li&gt;&lt;p&gt;可变和不可变&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;String类中使用字符数组保存字符串，被final修饰，所以String对象是不可变类。&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;g
+    
+    </summary>
+    
+      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="String" scheme="http://blog.code41.me/tags/String/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>常见的集合类概念和问题总结</title>
+    <link href="http://blog.code41.me/2016/05/18/basic-knowledge-for-collection-and-map/"/>
+    <id>http://blog.code41.me/2016/05/18/basic-knowledge-for-collection-and-map/</id>
+    <published>2016-05-18T13:27:32.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="ArrayList的实现原理"><a href="#ArrayList的实现原理" class="headerlink" title="ArrayList的实现原理"></a>ArrayList的实现原理</h3><ol>
+<li>ArrayList是基于数组的方式实现，无容量的限制；</li>
+<li>ArrayList在插入元素时可能会扩容，删除元素并不会减少数组容量，大部分都是使用System.arraycopy进行深拷贝出新的对象数组；</li>
+<li>由于ArrayList是基于数组的方式实现，所以查询是O(1)复杂度；</li>
+<li>线程不安全。</li>
+</ol>
+<h3 id="Vector的实现原理"><a href="#Vector的实现原理" class="headerlink" title="Vector的实现原理"></a>Vector的实现原理</h3><ol>
+<li>Vector和ArrayList的实现方式一样，只是关键方法都添加Synchronize的关键字来保证线程安全；</li>
+<li>容量扩展上和ArrayList不同，可以再初始化创建Vector时，传入增长值来控制每次扩展大小；</li>
+<li>线程安全的，由于锁的机制，操作耗费性能较大。</li>
+</ol>
+<h3 id="LinkedList的实现原理"><a href="#LinkedList的实现原理" class="headerlink" title="LinkedList的实现原理"></a>LinkedList的实现原理</h3><ol>
+<li>LinkedList是基于双向链表实现的；</li>
+<li>创建对象后，默认插入首位，只需要更改位置的前后指针就可以完成插入操作；</li>
+<li>查找元素时，遍历整个链表；</li>
+<li>删除元素时，遍历链表查找到元素后，更改前后元素指针，删除链表上的元素；</li>
+<li>线程不安全。</li>
+</ol>
+<h3 id="Stack的实现原理"><a href="#Stack的实现原理" class="headerlink" title="Stack的实现原理"></a>Stack的实现原理</h3><ol>
+<li>继承于Vector类，额外实现了pop()、push()、peek()的方法；</li>
+<li>支持后进先出(LIFO)；</li>
+<li>线程安全的。</li>
+</ol>
+<h3 id="ArrayList的大小是如何自动增加的"><a href="#ArrayList的大小是如何自动增加的" class="headerlink" title="ArrayList的大小是如何自动增加的"></a>ArrayList的大小是如何自动增加的</h3><ol>
+<li>ArrayList在进行add操作时会对大小进行判断，如果不够大，会增长50%；</li>
+<li>如果容量不足时，ArrayList执行add方法的过程时，新建一个长度更长的数组，使用System.arraycopy()方法将旧数组拷贝到新数组。<blockquote>
+<p>System.arraycopy()方法为浅拷贝，只是指针的引用。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="ArrayList初始化创建赋值方式"><a href="#ArrayList初始化创建赋值方式" class="headerlink" title="ArrayList初始化创建赋值方式"></a>ArrayList初始化创建赋值方式</h3><ol>
+<li>无参创建：创建一个空数组填充的ArrayList，长度为0；</li>
+<li>根据size大小创建：根据传入数字，创建大小一样的数组；</li>
+<li>根据Collection对象创建：根据传入Collection对象的toArray()返回结果判断size，并将Collection的toArray()返回值，使用Arrays.copyOf方法赋值；</li>
+<li>初始创建的空ArrayList对象会在第一次add方法调用的时候，使用默认大小10进行数组创建。</li>
+</ol>
+<h3 id="如何复制某个ArrayList到另一个ArrayList"><a href="#如何复制某个ArrayList到另一个ArrayList" class="headerlink" title="如何复制某个ArrayList到另一个ArrayList"></a>如何复制某个ArrayList到另一个ArrayList</h3><ol>
+<li>使用clone方法：ArrayList newArray = oldArray.clone();</li>
+<li>使用ArrayList构造方法：ArrayList myObject = new ArrayList(myTempObject);</li>
+<li>使用Collection的copy方法<blockquote>
+<p>第3种为深拷贝，其他为浅拷贝</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="评估ArrayList的增加或者删除效率低的原因，如何改善？"><a href="#评估ArrayList的增加或者删除效率低的原因，如何改善？" class="headerlink" title="评估ArrayList的增加或者删除效率低的原因，如何改善？"></a>评估ArrayList的增加或者删除效率低的原因，如何改善？</h3><p>删除和添加都是依赖于System.arraycopy()方法，所以效率比较低。<br><br>改善：使用LinkedList进行频繁的添加和删除操作。</p>
+<h3 id="ArrayList和LinkedList的区别"><a href="#ArrayList和LinkedList的区别" class="headerlink" title="ArrayList和LinkedList的区别"></a>ArrayList和LinkedList的区别</h3><ol>
+<li>两者都是线程不安全的。</li>
+<li>ArrayList是基于对象数组实现，插入和删除操作性能消耗较大；而LinkedList是基于链表方式实现的，插入和删除性能消耗小，只需要操作指针就可以。</li>
+<li>ArrayList查询时时间复杂度O(1)，故ArrayList查询性能好；而LinkedList需要遍历，故查询性能LinkedList较差。</li>
+</ol>
+<h3 id="ArrayList和Vector的区别"><a href="#ArrayList和Vector的区别" class="headerlink" title="ArrayList和Vector的区别"></a>ArrayList和Vector的区别</h3><ol>
+<li>两者都实现了List接口，都是通过对象数组进行数据存储。</li>
+<li>Vector的方法是使用synchronized关键字进行了同步锁定，是线程安全的；而ArrayList是线程不安全的。</li>
+<li>ArrayList在容量不足的情况下，会新增50%的空间；而Vector会新增100%的空间；但是两者在插入新对象时都是使用Arrays.copyOf()方法，将老对象拷贝到扩充后的对象数组中的。</li>
+</ol>
+<h3 id="ListIterator和Iterator的区别"><a href="#ListIterator和Iterator的区别" class="headerlink" title="ListIterator和Iterator的区别"></a>ListIterator和Iterator的区别</h3><ol>
+<li>都有hasNext和next方法，都可以进行向后的遍历。</li>
+<li>都含有remove方法，都可以对元素进行删除。</li>
+<li>ListIterator含有hasPrevious和previous方法，可以进行向前遍历。</li>
+<li>ListIterator含有add和set方法，除了删除还可以完成元素的添加和修改操作。</li>
+<li>ListIterator可以通过nextIndex和previousIndex获取元素的索引位置。</li>
+</ol>
+<h3 id="ConcurrentHashMap的实现原理"><a href="#ConcurrentHashMap的实现原理" class="headerlink" title="ConcurrentHashMap的实现原理"></a>ConcurrentHashMap的实现原理</h3><ol>
+<li>实现原理和HashMap类似，但是引入了segment，故每次put操作只锁某一个segment，而对其他segment无影响。</li>
+<li>hash的实现是final类型，故每个value的key都不会重复。</li>
+<li>get操作的变量是volatile的变量，保证了获取之前都是写操作完成的，故保证了数据的实时性。</li>
+</ol>
+<h3 id="HashMap的实现原理"><a href="#HashMap的实现原理" class="headerlink" title="HashMap的实现原理"></a>HashMap的实现原理</h3><ol>
+<li>采用数组方式存储key和value构成的Entry对象，无容量限制；</li>
+<li>基于key的hash寻找在Entry数组中的位置，对于hash冲突采用链表方式处理；</li>
+<li>HashMap进行元素添加的时候，先查找是否已存在，如果已存在就覆盖旧的value，并返回就得value，如果不存在，添加新的Entry对象；</li>
+<li>HashMap在添加元素时，如果空间不够，自动扩展空间，扩展操作会创建新的Entry数组，并将老的Entry数组拷贝到新的数组中；</li>
+<li>线程不安全。</li>
+</ol>
+<h3 id="TreeMap的实现原理"><a href="#TreeMap的实现原理" class="headerlink" title="TreeMap的实现原理"></a>TreeMap的实现原理</h3><ol>
+<li>TreeMap是基于红黑树实现的，无容量限制；</li>
+<li>TreeMap是线程不安全的。</li>
+</ol>
+<h3 id="HashSet和TreeSet的实现原理"><a href="#HashSet和TreeSet的实现原理" class="headerlink" title="HashSet和TreeSet的实现原理"></a>HashSet和TreeSet的实现原理</h3><ol>
+<li>HashSet是基于HashMap实现的；</li>
+<li>TreeSet是基于TreeMap实现的；</li>
+<li>线程不安全</li>
+</ol>
+<p>Java集合类的关系图谱如下所示：<br><img src="/2016/05/18/basic-knowledge-for-collection-and-map/relation-map-for-collection-and-map.png" alt="Java集合类关系图谱"></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;ArrayList的实现原理&quot;&gt;&lt;a href=&quot;#ArrayList的实现原理&quot; class=&quot;headerlink&quot; title=&quot;ArrayList的实现原理&quot;&gt;&lt;/a&gt;ArrayList的实现原理&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;ArrayList是基于数组的方
+    
+    </summary>
+    
+      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="集合类" scheme="http://blog.code41.me/tags/%E9%9B%86%E5%90%88%E7%B1%BB/"/>
+    
+      <category term="List" scheme="http://blog.code41.me/tags/List/"/>
+    
+      <category term="Map" scheme="http://blog.code41.me/tags/Map/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>JVM虚拟机GC回收算法</title>
+    <link href="http://blog.code41.me/2016/04/27/jvm-gc-algorithm/"/>
+    <id>http://blog.code41.me/2016/04/27/jvm-gc-algorithm/</id>
+    <published>2016-04-27T07:12:34.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="JVM垃圾收集算法"><a href="#JVM垃圾收集算法" class="headerlink" title="JVM垃圾收集算法"></a>JVM垃圾收集算法</h2><blockquote>
+<p>由于大多数虚拟机实现的细节不同，主要有4种垃圾收集算法：标记-清除算法、复制算法、标记-整理算法和分代收集算法。其中标记-清除为基础算法，复制算法和标记-整理算法都是基于该算法衍生而出，分代收集算法则是之前3种算法的整合。</p>
+</blockquote>
+<h3 id="标记-清除算法-Mark-Sweep"><a href="#标记-清除算法-Mark-Sweep" class="headerlink" title="标记-清除算法[Mark-Sweep]"></a>标记-清除算法[Mark-Sweep]</h3><p>概念：内存中标记需要回收的内存空间，在标记完成后统一回收掉全部标记的内存空间，从而使得对象回收完成。<br></p>
+<blockquote>
+<p>算法操作流程：标记 -&gt; 删除<br></p>
+</blockquote>
+<p><strong>算法缺点:</strong></p>
+<ul>
+<li>效率问题：标记和清除的操作过程，效率都比较低。</li>
+<li>空间问题：清除后会产生大量不连续的内存碎片，导致大对象无可用的连续内存。</li>
+</ul>
+<p>示意图如下：<br><img src="/2016/04/27/jvm-gc-algorithm/mark-sweep.png" alt="mark-sweep"></p>
+<h3 id="复制算法-Copying"><a href="#复制算法-Copying" class="headerlink" title="复制算法[Copying]"></a>复制算法[Copying]</h3><p>可用内存划分为大小相等的两部分，当内存用完后，将存活对象所占用的内存空间复制到另外一半中，然后回收掉用完的一半。</p>
+<p><strong>算法优点:</strong></p>
+<ul>
+<li>只需要移动堆顶的指针就可以完成内存的切换，运行高效</li>
+<li>无内存碎片问题</li>
+</ul>
+<p><strong>算法缺点：</strong></p>
+<ul>
+<li>内存只使用一半，浪费较大</li>
+</ul>
+<blockquote>
+<p>扩展：HotSpot虚拟机针对新生代的回收方式为复制算法的变体，由于<strong>新生代对象存活时间短</strong>的特点，HotSpot将内存划分为3部分，Eden:Survivor:Survivor=8:1:1，每次对象创建在Eden中创建，当GC发生时，将Eden和Survivor中存活对象所占空间复制到另外的Survivor中，从而完成新生代的回收。<br>PS：不能保证每次存活的对象都控制在10%以内，超出部分通过分配担保进行内存空间分配存储。</p>
+</blockquote>
+<p>示意图如下：<br><img src="/2016/04/27/jvm-gc-algorithm/copying.png" alt="mark-sweep"></p>
+<h3 id="标记-整理算法-Mark-Compact"><a href="#标记-整理算法-Mark-Compact" class="headerlink" title="标记-整理算法[Mark-Compact]"></a>标记-整理算法[Mark-Compact]</h3><p>针对老年代的特点，让所有存活的对象向一端移动，清理边界以外的全部内存空间。</p>
+<p>示意图如下：<br><img src="/2016/04/27/jvm-gc-algorithm/mark-compact.png" alt="mark-sweep"></p>
+<h3 id="分代收集算法-Generational-Collection"><a href="#分代收集算法-Generational-Collection" class="headerlink" title="分代收集算法[Generational Collection]"></a>分代收集算法[Generational Collection]</h3><p>根据存活周期不同将内存划分多块，然后针对不同不同周期（年代）对象使用不同的，最应当的垃圾回收算法。</p>
+<blockquote>
+<p>java堆中划分为新生代和老年代，针对新生代(每次垃圾回收，有大批对象死亡，)使用Copying算法，而针对老年代使用Mark-Compact算法。</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;JVM垃圾收集算法&quot;&gt;&lt;a href=&quot;#JVM垃圾收集算法&quot; class=&quot;headerlink&quot; title=&quot;JVM垃圾收集算法&quot;&gt;&lt;/a&gt;JVM垃圾收集算法&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;由于大多数虚拟机实现的细节不同，主要有4种垃圾收集算法：标
+    
+    </summary>
+    
+      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="JVM" scheme="http://blog.code41.me/tags/JVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>mongodb授权配置及可视化客户端访问问题</title>
+    <link href="http://blog.code41.me/2015/12/09/mongodb-authorization/"/>
+    <id>http://blog.code41.me/2015/12/09/mongodb-authorization/</id>
+    <published>2015-12-09T05:59:35.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="mongodb的授权配置"><a href="#mongodb的授权配置" class="headerlink" title="mongodb的授权配置"></a>mongodb的授权配置</h2><p>在使用express开发自己的小项目一段时间后，发现mongodb的配置一致是本地无密码的接入方式，这样的方式在开发中一定是无所谓了，但是在实际的生产和服务器配置上是不会被允许的，所以研究今天研究了一下mongodb的授权配置和数据库用户添加等配置问题。</p>
+<ol>
+<li><p>mongodb的本地配置</p>
+<ul>
+<li>version: v3.0.6</li>
+<li>OS: windows 7</li>
+<li>start-script:<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">D:\bin\MongoDB\Server\3.0\bin\mongod.exe --dbpath D:\bin\MongoDB\mongoData</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>连接命令行客户端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongo -port 27017</div></pre></td></tr></table></figure>
+</li>
+<li><p>添加用户</p>
+<ul>
+<li><p>添加用户管理员用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">use admin;</div><div class="line"><span class="comment">## 创建root用户，设置全数据用户管理权限</span></div><div class="line">db.createUser(</div><div class="line">  &#123;</div><div class="line">    user:<span class="string">"root"</span>,</div><div class="line">    <span class="built_in">pwd</span>:<span class="string">"root"</span>,</div><div class="line">    roles:[&#123;role:<span class="string">"userAdminAnyDatabase"</span>,db:<span class="string">"admin"</span>&#125;]</div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+<li><p>添加各分库用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">use <span class="built_in">test</span>;</div><div class="line"></div><div class="line">db.createUser(</div><div class="line">  &#123;</div><div class="line">    user:<span class="string">"test"</span>,</div><div class="line">    <span class="built_in">pwd</span>:<span class="string">"test"</span>,</div><div class="line">    roles:[&#123;role:<span class="string">"readWrite"</span>,db:<span class="string">"test"</span>&#125;]</div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>修改原有role权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## 给root用户超级管理员权限, 这样才能被robomongo使用</span></div><div class="line">db.grantRolesToUser(</div><div class="line"><span class="string">"root"</span>,</div><div class="line">[</div><div class="line">  &#123;</div><div class="line">    role:<span class="string">"__system"</span>,</div><div class="line">    db:<span class="string">"admin"</span></div><div class="line">  &#125;</div><div class="line">]</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改启动脚本和项目配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">D:\bin\MongoDB\Server\3.0\bin\mongod.exe --dbpath D:\bin\MongoDB\mongoData --auth</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<h2 id="mongodb的GUI可视化工具授权无法连接问题"><a href="#mongodb的GUI可视化工具授权无法连接问题" class="headerlink" title="mongodb的GUI可视化工具授权无法连接问题"></a>mongodb的GUI可视化工具授权无法连接问题</h2><p><strong>使用授权模式启动mongodb后，robomongo无法连接?</strong></p>
+<blockquote>
+<p> Failed to authenticate root@admin with mechanism MONGODB-CR:<br> AuthenticationFailed MONGODB-CR credentials missing in the user document</p>
+</blockquote>
+<ol>
+<li>原因分析<ul>
+<li>mongodb 3.0.X 的认证方式升级为<strong>SCRAM-SHA-1</strong>, 而2.X版本的认证方式为<strong>MONGODB-CR</strong></li>
+<li>robomongo是基于mongodb 2.X开发的可视化工具，所以认证方式为2.X，不支持<strong>SCRAM-SHA-1</strong></li>
+</ul>
+</li>
+<li><p>处理方式</p>
+<ul>
+<li><p>查看现有的认证版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">db.system.version.findOne(&#123;<span class="string">"_id"</span> : <span class="string">"authSchema"</span>&#125;)</div><div class="line"></div><div class="line">&#123;</div><div class="line">  <span class="string">"_id"</span> : <span class="string">"authSchema"</span>,</div><div class="line">  <span class="string">"currentVersion"</span> : 5</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改认证方式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">var schema = db.system.version.findOne(&#123;<span class="string">"_id"</span> : <span class="string">"authSchema"</span>&#125;)</div><div class="line">schema.currentVersion = 3</div><div class="line">db.system.version.save(schema)</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除已创建的用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">db.dropAllUsers()</div></pre></td></tr></table></figure>
+</li>
+<li><p>重新创建用户</p>
+</li>
+</ul>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;mongodb的授权配置&quot;&gt;&lt;a href=&quot;#mongodb的授权配置&quot; class=&quot;headerlink&quot; title=&quot;mongodb的授权配置&quot;&gt;&lt;/a&gt;mongodb的授权配置&lt;/h2&gt;&lt;p&gt;在使用express开发自己的小项目一段时间后，发现mongodb的配置一致是本地无密码的接入方式，这样的方式在开发中一定是无所谓了，但是在实际的生产和服务器配置上是不会被允许的，所以研究今天研究了一下mongodb的授权配置和数据库用户添加等配置问题。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;mongodb的本地配置&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;version: v3.0.6&lt;/li&gt;
+&lt;li&gt;OS: windows 7&lt;/li&gt;
+&lt;li&gt;start-script:&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;D:\bin\MongoDB\Server\3.0\bin\mongod.exe --dbpath D:\bin\MongoDB\mongoData&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;连接命令行客户端&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;mongo -port 27017&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;添加用户&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;添加用户管理员用户&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;use admin;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;## 创建root用户，设置全数据用户管理权限&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;db.createUser(&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;  &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    user:&lt;span class=&quot;string&quot;&gt;&quot;root&quot;&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;pwd&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&quot;root&quot;&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    roles:[&amp;#123;role:&lt;span class=&quot;string&quot;&gt;&quot;userAdminAnyDatabase&quot;&lt;/span&gt;,db:&lt;span class=&quot;string&quot;&gt;&quot;admin&quot;&lt;/span&gt;&amp;#125;]&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;  &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;添加各分库用户&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;use &lt;span class=&quot;built_in&quot;&gt;test&lt;/span&gt;;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;db.createUser(&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;  &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    user:&lt;span class=&quot;string&quot;&gt;&quot;test&quot;&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;pwd&lt;/span&gt;:&lt;span class=&quot;string&quot;&gt;&quot;test&quot;&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    roles:[&amp;#123;role:&lt;span class=&quot;string&quot;&gt;&quot;readWrite&quot;&lt;/span&gt;,db:&lt;span class=&quot;string&quot;&gt;&quot;test&quot;&lt;/span&gt;&amp;#125;]&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;  &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;修改原有role权限&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;## 给root用户超级管理员权限, 这样才能被robomongo使用&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;db.grantRolesToUser(&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;string&quot;&gt;&quot;root&quot;&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;[&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;  &amp;#123;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    role:&lt;span class=&quot;string&quot;&gt;&quot;__system&quot;&lt;/span&gt;,&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;    db:&lt;span class=&quot;string&quot;&gt;&quot;admin&quot;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;  &amp;#125;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;]&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;)&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;修改启动脚本和项目配置&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;D:\bin\MongoDB\Server\3.0\bin\mongod.exe --dbpath D:\bin\MongoDB\mongoData --auth&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="数据库" scheme="http://blog.code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+      <category term="mongodb" scheme="http://blog.code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/mongodb/"/>
+    
+    
+      <category term="mongodb" scheme="http://blog.code41.me/tags/mongodb/"/>
+    
+      <category term="robomongo" scheme="http://blog.code41.me/tags/robomongo/"/>
+    
+      <category term="数据库" scheme="http://blog.code41.me/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Node普通应用的基本Nginx配置</title>
+    <link href="http://blog.code41.me/2015/09/24/basic-nginx-configuration-for-node-webapp/"/>
+    <id>http://blog.code41.me/2015/09/24/basic-nginx-configuration-for-node-webapp/</id>
+    <published>2015-09-24T14:41:11.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Node普通应用的基本Nginx配置"><a href="#Node普通应用的基本Nginx配置" class="headerlink" title="Node普通应用的基本Nginx配置"></a>Node普通应用的基本Nginx配置</h2><blockquote>
+<p>前几日由于网慢，自己购买了一个小的docker容器，这两天就打算鼓捣个小的应用放到上面，同时配置上自己之前的域名，但是在端口的出现毕竟不好看，之前一直知道Nginx的用途，故配置了一个小的Nginx的反向代理来实践一下。</p>
+</blockquote>
+<h4 id="Centos-安装Nginx"><a href="#Centos-安装Nginx" class="headerlink" title="Centos 安装Nginx"></a>Centos 安装Nginx</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 安装nginx需要的一些第三方包，来支持相关模块的使用</div><div class="line">yum -y install gcc gcc-c++ autoconf automake make</div><div class="line">yum -y install zlib zlib-devel openssl openssl--devel pcre pcre-devel </div><div class="line"></div><div class="line"># 安装nginx</div><div class="line">yum install nginx</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="nginx的基本操作"><a href="#nginx的基本操作" class="headerlink" title="nginx的基本操作"></a>nginx的基本操作</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 启动 前面是命令，后面参数为配置文件</div><div class="line">/usr/sbin/nginx -c /etc/nginx/nginx.conf</div><div class="line"># 停止和重启 TODO:待补充实践，目前测试不成功</div><div class="line"></div><div class="line"># 强制删除全部nginx相关进程</div><div class="line">kill -9 PIDS</div></pre></td></tr></table></figure>
+<h4 id="配置文件描述基本配置"><a href="#配置文件描述基本配置" class="headerlink" title="配置文件描述基本配置"></a>配置文件描述基本配置</h4><ul>
+<li>主配置文件部分</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div></pre></td><td class="code"><pre><div class="line">#nginx 运行的用户和所在组</div><div class="line">ser noder web;</div><div class="line">#辅助的worker进程数，一般为总核数 2核4处理器 =&gt; 8</div><div class="line">worker_processes auto;</div><div class="line">#日志打印位置 可以追加日志级别</div><div class="line">error_log /var/log/nginx/error.log;</div><div class="line">#nginx运行的进程ID</div><div class="line">pid /run/nginx.pid;</div><div class="line">#当一个nginx 进程打开的最多文件描述符数目</div><div class="line">worker_rlimit_nofile                    65535;</div><div class="line">#nginx的核心模块之一，后续进阶文章讲解</div><div class="line">events</div><div class="line">&#123;</div><div class="line">                                        use epoll;</div><div class="line">                                        worker_connections 65535;</div><div class="line">&#125;</div><div class="line">#nginx核心模块之一，主要处理网络相关</div><div class="line">http</div><div class="line">&#123;</div><div class="line">        include                         mime.types;</div><div class="line">        default_type                    application/octet-stream;</div><div class="line">        server_tokens                   on;</div><div class="line">        log_format main                 &apos;$remote_addr - $remote_user [$time_local] &apos;</div><div class="line">                                                        &apos;&quot;$request&quot; $status $bytes_sent &apos;</div><div class="line">                                                        &apos;&quot;$http_referer&quot; &quot;$http_user_agent&quot; &apos;</div><div class="line">                                                        &apos;&quot;$gzip_ratio&quot;&apos;;</div><div class="line">        #charset                        utf-8;</div><div class="line">        server_names_hash_bucket_size   128;</div><div class="line">        client_header_buffer_size       32k;</div><div class="line">        large_client_header_buffers     4 32k;</div><div class="line">        client_max_body_size            300m;</div><div class="line">        sendfile                        on;</div><div class="line">        tcp_nopush                      on;</div><div class="line">        keepalive_timeout               0;</div><div class="line">        tcp_nodelay                     on;</div><div class="line">        client_body_buffer_size         512k;</div><div class="line">        fastcgi_intercept_errors        on;</div><div class="line">        proxy_connect_timeout           90;</div><div class="line">        proxy_read_timeout              180;</div><div class="line">        proxy_send_timeout              180;</div><div class="line">        proxy_buffer_size               256k;</div><div class="line">        proxy_buffers                   4 256k;</div><div class="line">        proxy_busy_buffers_size         256k;</div><div class="line">        proxy_temp_file_write_size      256k;</div><div class="line">        proxy_intercept_errors          on;</div><div class="line">        server_name_in_redirect         off;</div><div class="line">        proxy_hide_header       X-Powered-By;</div><div class="line"></div><div class="line">        #gzip压缩相关</div><div class="line">        gzip                            on;</div><div class="line">        gzip_min_length                 100;</div><div class="line">        gzip_buffers                    4 16k;</div><div class="line">        gzip_http_version               1.0;</div><div class="line">        gzip_comp_level                 9;</div><div class="line">        gzip_types                      text/plain application/x-javascript text/css application/xml;</div><div class="line">        gzip_vary                       on;</div><div class="line">        error_page 400 401 402 403 404 405 408 410 412 413 414 415 500 501 502 503 506 = http://code41.me/;</div><div class="line"></div><div class="line">#模块化处理反向代理文件，拆分不同域名独立文件</div><div class="line">include domains/*;</div><div class="line"># 模块话内容的主要组成</div><div class="line">###########status#########</div><div class="line">#        server</div><div class="line">#                &#123;</div><div class="line">#                 listen                 80;</div><div class="line">#                 server_name            status.code41.me;</div><div class="line">#        location / &#123;</div><div class="line">#                 stub_status            on;</div><div class="line">#                 access_log             off;</div><div class="line">#                 &#125;</div><div class="line">#        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ul>
+<li>域名反向代理配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">#代理最终请求的地址，nginx模块upstream的基本用法</div><div class="line">upstream noder_web &#123;</div><div class="line">                server 127.0.0.1:3000  weight=10 max_fails=2 fail_timeout=30s;</div><div class="line">                &#125;</div><div class="line">#核心服务配置部分</div><div class="line">server</div><div class="line">&#123;</div><div class="line">    #监听端口</div><div class="line">    listen                   80;</div><div class="line">    #域名的虚拟主机名称</div><div class="line">    server_name              www.code41.me code41.me cms.code41.me;</div><div class="line">    #请求来源日志</div><div class="line">    access_log               /var/log/nginx/domains/noder_web_access.log main;</div><div class="line">    #请求处理日志</div><div class="line">    error_log                /var/log/nginx/domains/noder_web_error.log error;</div><div class="line">    location / &#123;</div><div class="line">        proxy_next_upstream     http_500 http_502 http_503 http_504 error timeout invalid_header;</div><div class="line">        proxy_set_header        Host  $host;</div><div class="line">        proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;</div><div class="line">        #代理请求</div><div class="line">        proxy_pass              http://noder_web;</div><div class="line">        expires                 1d;</div><div class="line">        &#125;</div><div class="line">    location /logs/ &#123;</div><div class="line">                autoindex       off;</div><div class="line">                deny all;</div><div class="line">        &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Node普通应用的基本Nginx配置&quot;&gt;&lt;a href=&quot;#Node普通应用的基本Nginx配置&quot; class=&quot;headerlink&quot; title=&quot;Node普通应用的基本Nginx配置&quot;&gt;&lt;/a&gt;Node普通应用的基本Nginx配置&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;前几日由于网慢，自己购买了一个小的docker容器，这两天就打算鼓捣个小的应用放到上面，同时配置上自己之前的域名，但是在端口的出现毕竟不好看，之前一直知道Nginx的用途，故配置了一个小的Nginx的反向代理来实践一下。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;Centos-安装Nginx&quot;&gt;&lt;a href=&quot;#Centos-安装Nginx&quot; class=&quot;headerlink&quot; title=&quot;Centos 安装Nginx&quot;&gt;&lt;/a&gt;Centos 安装Nginx&lt;/h4&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;# 安装nginx需要的一些第三方包，来支持相关模块的使用&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;yum -y install gcc gcc-c++ autoconf automake make&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;yum -y install zlib zlib-devel openssl openssl--devel pcre pcre-devel &lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 安装nginx&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;yum install nginx&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="基础" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="nginx" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80/nginx/"/>
+    
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="nginx" scheme="http://blog.code41.me/tags/nginx/"/>
+    
+      <category term="反向代理" scheme="http://blog.code41.me/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在Linode服务器上搭建Shadowsocks</title>
+    <link href="http://blog.code41.me/2015/09/22/deploy-shadowsocks-on-linode-server/"/>
+    <id>http://blog.code41.me/2015/09/22/deploy-shadowsocks-on-linode-server/</id>
+    <published>2015-09-22T13:15:09.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="搭建Shadowsocks"><a href="#搭建Shadowsocks" class="headerlink" title="搭建Shadowsocks"></a>搭建Shadowsocks</h2><blockquote>
+<p>昨晚突然感觉好多东西都无法访问，与其购买VPN等不靠谱的产品不如自己搭建一套，鉴于在前一段Github下载Shadowsocks之前，fork了一下代码，故准备在新加坡的服务器上搭建自己的梯子，以下是简单步骤</p>
+</blockquote>
+<ol>
+<li>启动一个国外的服务器实例，目前大部分都是docker容器，故买了一个linode的$10/m的服务器</li>
+<li>实例安装Centos 7.0的系统，并且启动<a id="more"></a></li>
+<li><p>更新软件源，并且安装相关的lib</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">yum update</div><div class="line">yum install epel-release </div><div class="line">yum update </div><div class="line">yum install python-setuptools m2crypto supervisor </div><div class="line">easy_install pip </div><div class="line">pip install shadowsocks</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置shadowsock的配置文件，在/etc文件夹下创建配置文件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"># file name : shadowsocks.json</div><div class="line"># file path : /etc/shadowsocks.json</div><div class="line">vim /etc/shadowsocks.json</div><div class="line"># file content</div><div class="line">&#123;</div><div class="line">    &quot;server&quot;:&quot;0.0.0.0&quot;,</div><div class="line">    &quot;server_port&quot;:8388,</div><div class="line">    &quot;local_port&quot;:1080,</div><div class="line">    &quot;password&quot;:&quot;yourpassword&quot;,</div><div class="line">    &quot;timeout&quot;:600,</div><div class="line">    &quot;method&quot;:&quot;aes-256-cfb&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>后台运行启动</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">nohup ssserver -c /etc/shadowsocks.json &amp;</div><div class="line"># 然后ctrl + z</div><div class="line">bg 1</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置客户端进行使用</p>
+</li>
+</ol>
+<blockquote>
+<p>使用shadowsocks客户端，服务器端口和客户端端口与配置文件相同</p>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;搭建Shadowsocks&quot;&gt;&lt;a href=&quot;#搭建Shadowsocks&quot; class=&quot;headerlink&quot; title=&quot;搭建Shadowsocks&quot;&gt;&lt;/a&gt;搭建Shadowsocks&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;昨晚突然感觉好多东西都无法访问，与其购买VPN等不靠谱的产品不如自己搭建一套，鉴于在前一段Github下载Shadowsocks之前，fork了一下代码，故准备在新加坡的服务器上搭建自己的梯子，以下是简单步骤&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;启动一个国外的服务器实例，目前大部分都是docker容器，故买了一个linode的$10/m的服务器&lt;/li&gt;
+&lt;li&gt;实例安装Centos 7.0的系统，并且启动&lt;/li&gt;&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="工具" scheme="http://blog.code41.me/categories/%E5%B7%A5%E5%85%B7/"/>
+    
+    
+      <category term="梯子" scheme="http://blog.code41.me/tags/%E6%A2%AF%E5%AD%90/"/>
+    
+      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="shadowsocks" scheme="http://blog.code41.me/tags/shadowsocks/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>在shell中使用Sublime Text</title>
+    <link href="http://blog.code41.me/2015/09/17/use-sublime-text-in-shell/"/>
+    <id>http://blog.code41.me/2015/09/17/use-sublime-text-in-shell/</id>
+    <published>2015-09-17T06:45:03.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="在Shell中配置Sublime-Text"><a href="#在Shell中配置Sublime-Text" class="headerlink" title="在Shell中配置Sublime Text"></a>在Shell中配置Sublime Text</h2><p>Sublime Text是一种常见的编辑器软件，并且被很多人喜欢。而鉴于多平台的原因，Sublime Text在不同的平台中需要使用的不同的配置方式。</p>
+<ul>
+<li>Linux:</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 在~下的目录下的.bashrc或者.zshrc文件中添加</span></div><div class="line"><span class="built_in">alias</span> subl=<span class="string">"/usr/local/bin/subl"</span></div></pre></td></tr></table></figure>
+<ul>
+<li>windows:</li>
+</ul>
+<blockquote>
+<p>由于习惯使用Git Bash作为命令行讲解工具，故配置同Linux下相同</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># 在~下的目录下的.bashrc或者.zshrc文件中添加</span></div><div class="line"><span class="built_in">alias</span> subl=<span class="string">"/d/bin/Sublime\ Text\ 3/subl.exe"</span></div><div class="line"><span class="comment"># 同理，再配置一个chrome的Shell命令</span></div><div class="line"><span class="built_in">alias</span></div></pre></td></tr></table></figure>
+<a id="more"></a>
+<ul>
+<li>Mac:</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">alias</span> subl=<span class="string">'/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'</span></div></pre></td></tr></table></figure>
+<p>PS: 具体程序名称等需要按照对应的修改下配置内容</p>
+<h2 id="subl命令相关参数"><a href="#subl命令相关参数" class="headerlink" title="subl命令相关参数"></a>subl命令相关参数</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">subl -h</div></pre></td></tr></table></figure>
+<p>在Shell中运行以上的命令后，会看到提示的相关帮助。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">$ subl -h</div><div class="line">Sublime Text build 3083</div><div class="line"></div><div class="line">Usage: subl [arguments] [files]         *打开指定的文件[ subl app.js]*</div><div class="line">   or: subl [arguments] [directories]   *打开制定的文件夹[ subl ./]*</div><div class="line"></div><div class="line">Arguments:</div><div class="line">  --project &lt;project&gt;: Load the given project *载入指定的project*</div><div class="line">  --command &lt;<span class="built_in">command</span>&gt;: Run the given <span class="built_in">command</span> *运行指定命令*</div><div class="line">  -n or --new-window:  Open a new window *打开新的窗口*</div><div class="line">  <span class="_">-a</span> or --add:         Add folders to the current window *添加文件夹到当前窗口*</div><div class="line">  -w or --wait:        Wait <span class="keyword">for</span> the files to be closed before returning *返回前等待文件关*</div><div class="line">  -b or --background:  Don<span class="string">'t activate the application *后台运行*</span></div><div class="line">  -s or --stay:        *在关闭文件后，保持存活*</div><div class="line">  -h or --help:        Show help (this message) and exit *显示帮助*</div><div class="line">  -v or --version:     Show version and exit *显示版本号*</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;在Shell中配置Sublime-Text&quot;&gt;&lt;a href=&quot;#在Shell中配置Sublime-Text&quot; class=&quot;headerlink&quot; title=&quot;在Shell中配置Sublime Text&quot;&gt;&lt;/a&gt;在Shell中配置Sublime Text&lt;/h2&gt;&lt;p&gt;Sublime Text是一种常见的编辑器软件，并且被很多人喜欢。而鉴于多平台的原因，Sublime Text在不同的平台中需要使用的不同的配置方式。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Linux:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 在~下的目录下的.bashrc或者.zshrc文件中添加&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;alias&lt;/span&gt; subl=&lt;span class=&quot;string&quot;&gt;&quot;/usr/local/bin/subl&quot;&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;windows:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;blockquote&gt;
+&lt;p&gt;由于习惯使用Git Bash作为命令行讲解工具，故配置同Linux下相同&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 在~下的目录下的.bashrc或者.zshrc文件中添加&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;alias&lt;/span&gt; subl=&lt;span class=&quot;string&quot;&gt;&quot;/d/bin/Sublime\ Text\ 3/subl.exe&quot;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;# 同理，再配置一个chrome的Shell命令&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;alias&lt;/span&gt;&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+      <category term="编辑器" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+    
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="Sublime" scheme="http://blog.code41.me/tags/Sublime/"/>
+    
+      <category term="编辑器" scheme="http://blog.code41.me/tags/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GIT进阶知识和命令</title>
+    <link href="http://blog.code41.me/2015/07/09/git-commands-advanced/"/>
+    <id>http://blog.code41.me/2015/07/09/git-commands-advanced/</id>
+    <published>2015-07-08T16:21:50.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="GIT-分支操作"><a href="#GIT-分支操作" class="headerlink" title="GIT 分支操作"></a>GIT 分支操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"># 查看远程分支</div><div class="line">git branch -a</div><div class="line"></div><div class="line"># 查看本地分支</div><div class="line">git branch</div><div class="line"></div><div class="line"># 推送分支到远程分支</div><div class="line">git push origin BRANCH_NAME</div><div class="line"></div><div class="line"># 获取远程分支</div><div class="line">git checkout -b BRANCH_NAME origin/BRANCH_NAME</div><div class="line"></div><div class="line"># 建立本地分支和远程分支的关联</div><div class="line">git branch --set-upstream BRANCH_NAME origin/BRANCH_NAME</div><div class="line"></div><div class="line"># 切换分支</div><div class="line">git checkout BRANCH_NAME</div><div class="line"># 创建分支</div><div class="line">git branch BRANCH_NAME</div><div class="line"></div><div class="line"># 创建并切换分支</div><div class="line">git checkout -b BRANCH_NAME</div><div class="line"></div><div class="line"># 合并分支(在需要合并代码的分支中，选择目的分支进行合并)</div><div class="line">git merge BASE_BRANCHE_NAME</div><div class="line">git merge BASE_BRANCHE_NAME --no-ff     #保留日志方式合并（推荐）</div><div class="line"></div><div class="line"># 删除分支</div><div class="line">git branch -d BRANCH_NAME</div><div class="line">git branch -D BRANCH_NAME   #强制删除分支</div><div class="line"></div><div class="line"># 删除远程分支</div><div class="line">git push origin :BRANCH_NAME</div></pre></td></tr></table></figure>
+<p><strong>PS:</strong>如果需要reset远程分支状态的时候，可以先删除远程分支再进行重新push</p>
+<a id="more"></a>
+<h3 id="分支中工作现场"><a href="#分支中工作现场" class="headerlink" title="分支中工作现场"></a>分支中工作现场</h3><blockquote>
+<p>当存在需要修理的bug时，而手边工作为修改完成的情况下，可以保存现有的工作现场，而在bug修正后进行工作现场恢复，继续之前的开发工作</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"># 保存工作现场</div><div class="line">git stash</div><div class="line"></div><div class="line"># 查看工作现场列表</div><div class="line">git stash list</div><div class="line"></div><div class="line"># 恢复工作现场</div><div class="line">git stash pop   #恢复上一个工作现场</div><div class="line">git stash apply stash@&#123;0&#125;</div></pre></td></tr></table></figure>
+<h2 id="GIT-的忽略设置-gitignore"><a href="#GIT-的忽略设置-gitignore" class="headerlink" title="GIT 的忽略设置 .gitignore"></a>GIT 的忽略设置 <strong>.gitignore</strong></h2><blockquote>
+<p><strong>忽略规则</strong></p>
+<ul>
+<li>以斜杠“/”开头表示目录</li>
+<li>以星号“*”通配多个字符</li>
+<li>以问号“?”通配单个字符</li>
+<li>以方括号“[]”包含单个字符的匹配列表</li>
+<li>以叹号“!”表示不忽略(跟踪)匹配到的文件或目录</li>
+<li>.gitignore配置文件是按行从上到下进行规则匹配的，意味着如果前面的规则匹配的范围更大，则后面的规则将不会生效</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 配置全局的忽略配置</div><div class="line">git config --global core.excludesfile ~/.gitignore_global</div></pre></td></tr></table></figure>
+<p><strong>PS:</strong>有一些常用的.gitignore配置可以参考<a href="https://github.com/github/gitignore/" title="GITHUB的忽略配置Demo" target="_blank" rel="external">GITHUB的忽略配置Demo</a> </p>
+<h2 id="GIT的TAG"><a href="#GIT的TAG" class="headerlink" title="GIT的TAG"></a>GIT的TAG</h2><blockquote>
+<p>GIT的打标签操作，主要是针对GIT的提交节点进行打标操作，同时可以为标签进行签名操作</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">git tag TAG_NAME            #添加标签</div><div class="line">git tag                     #查看本地标签</div><div class="line">git show TAG_NAME           #显示标签的信息</div><div class="line">git tag TAG_NAME COMMIT_ID  #根据提交id创建标签</div><div class="line">git tag -a TAG_NAME -m &quot;message&quot; COMMIT_ID  #根据提交id创建标签，同时添加说明</div><div class="line">git tag -s TAG_NAME -m &quot;message&quot; COMMIT_ID #根据提交id创建标签，同时添加签名采用PGP签名</div><div class="line">git tag -d TAG_NAME         #删除标签</div><div class="line">git push origin TAG_NAME    #推送标签到远程</div><div class="line">git push origin --tags      #推送全部标签</div><div class="line">git push origin :refs/tags/TAG_NAME     #删除远程标签</div></pre></td></tr></table></figure>
+<h2 id="GIT的服务器搭建"><a href="#GIT的服务器搭建" class="headerlink" title="GIT的服务器搭建"></a>GIT的服务器搭建</h2><ol>
+<li>服务器的搭建<br>搭建步骤</li>
+</ol>
+<ul>
+<li>安装GIT</li>
+<li>创建GIT用户，用于运行GIT服务</li>
+<li>将需要登录用户的公钥放入  <em>/home/git/.ssh/authorized_keys</em></li>
+<li>初始化Git仓库</li>
+<li>禁用shell登录</li>
+<li>克隆远程仓库</li>
+</ul>
+<ol>
+<li>GIT的权限</li>
+</ol>
+<ul>
+<li>小团队人员权限，将每个人的ssh公钥放到GIT服务器的 <em>/home/git/.ssh/authorized_keys</em> 中</li>
+<li>要方便管理公钥，用Gitosis；</li>
+<li>要更全面控制权限，用Gitolite。 </li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;GIT-分支操作&quot;&gt;&lt;a href=&quot;#GIT-分支操作&quot; class=&quot;headerlink&quot; title=&quot;GIT 分支操作&quot;&gt;&lt;/a&gt;GIT 分支操作&lt;/h2&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;2&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;3&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;4&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;5&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;6&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;7&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;8&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;9&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;10&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;11&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;12&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;13&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;14&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;15&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;16&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;17&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;18&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;19&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;20&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;21&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;22&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;23&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;24&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;25&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;26&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;27&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;28&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;29&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;30&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;31&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;32&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;33&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;# 查看远程分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git branch -a&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 查看本地分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git branch&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 推送分支到远程分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git push origin BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 获取远程分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git checkout -b BRANCH_NAME origin/BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 建立本地分支和远程分支的关联&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git branch --set-upstream BRANCH_NAME origin/BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 切换分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git checkout BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 创建分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git branch BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 创建并切换分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git checkout -b BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 合并分支(在需要合并代码的分支中，选择目的分支进行合并)&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git merge BASE_BRANCHE_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git merge BASE_BRANCHE_NAME --no-ff     #保留日志方式合并（推荐）&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 删除分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git branch -d BRANCH_NAME&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git branch -D BRANCH_NAME   #强制删除分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;# 删除远程分支&lt;/div&gt;&lt;div class=&quot;line&quot;&gt;git push origin :BRANCH_NAME&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;strong&gt;PS:&lt;/strong&gt;如果需要reset远程分支状态的时候，可以先删除远程分支再进行重新push&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="git" scheme="http://blog.code41.me/tags/git/"/>
+    
+      <category term="进阶" scheme="http://blog.code41.me/tags/%E8%BF%9B%E9%98%B6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GIT基础知识和命令</title>
+    <link href="http://blog.code41.me/2015/06/25/git-commods/"/>
+    <id>http://blog.code41.me/2015/06/25/git-commods/</id>
+    <published>2015-06-25T14:40:36.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="GIT-常用命令及基本操作"><a href="#GIT-常用命令及基本操作" class="headerlink" title="GIT 常用命令及基本操作"></a>GIT 常用命令及基本操作</h2><ol>
+<li><p>查看本地文件的git的状态</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git status</div></pre></td></tr></table></figure>
+</li>
+<li><p>本地工程初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git init</div></pre></td></tr></table></figure>
+</li>
+<li><p>为本地仓库绑定远程仓库地址</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git remote add origin URL</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<a id="more"></a>
+<ol>
+<li><p>常用基本操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"># 添加</div><div class="line">git add FILE        #添加文件</div><div class="line">git add *.FILE      #通配符添加文件</div><div class="line">git add .           #添加全部修改的文件</div><div class="line"></div><div class="line"># 还原add前的文件，就是将文件中修改的内容都revet</div><div class="line">git checkout -- FILE</div><div class="line"></div><div class="line"># 还原add后，commit前的文件到add前的状态</div><div class="line">git reset HEAD FILE</div><div class="line"></div><div class="line"># 查看修改文件的差异</div><div class="line">git diff</div><div class="line">git diff FILE</div><div class="line"></div><div class="line"># 提交</div><div class="line">git commit -m &quot;要提交的说明Comment&quot; FILE   # 提交 单个文件</div><div class="line">git commit -m &quot;要提交的说明Comment&quot; -a     # 提交 所有修改文件</div><div class="line">git commit -C head -a -amend              # 增补提交，不会产生新的提交历史</div><div class="line"></div><div class="line"># 查看提交日志</div><div class="line">git log</div><div class="line">git log --pretty=oneline        # 一行查看提交日志</div><div class="line"></div><div class="line"># 还原commit后的操作，还原节点后的提交日志不能查看了</div><div class="line">git reset --hard COMMIT_ID      # 按照COMMIT_ID还原文件，COMMIT_ID可以只写前几位</div><div class="line">git reset --hard HEAD^          # 还原上次的文件，如果^^，则还原上上次</div><div class="line"></div><div class="line"># 查看GIT操作命令历史记录</div><div class="line">git reflog</div><div class="line"></div><div class="line"># 删除文件</div><div class="line">git rm FILE     # 删除文件</div><div class="line">git checkout -- FILE # 删错找回</div><div class="line"></div><div class="line"># 推送本地文件</div><div class="line">git push</div><div class="line"></div><div class="line"># 拉取远程文件</div><div class="line">git pull</div><div class="line"></div><div class="line"># 克隆远程仓库</div><div class="line">git clone URL</div></pre></td></tr></table></figure>
+<h4 id="附：GIT工作区与暂存区"><a href="#附：GIT工作区与暂存区" class="headerlink" title="附：GIT工作区与暂存区"></a><em>附：GIT工作区与暂存区</em></h4><blockquote>
+<p>修改前   =&gt;  添加内容&amp;修改文件   =&gt;    git add     =&gt;  git commit<br>无状态   =&gt;  文件在工作区       =&gt;    文件在暂存区  =&gt;  文件在本地分支</p>
+</blockquote>
+<h4 id="附：SSH操作"><a href="#附：SSH操作" class="headerlink" title="附：SSH操作"></a><em>附：SSH操作</em></h4><blockquote>
+<p>为了减少git提交时反复输入用户名和密码的操作，故大部分采取SSH连接的方式进行提交，而通过本机的公钥文件配置在git服务器上就可以完成不用密码的提交操作。</p>
+</blockquote>
+<ul>
+<li>查看本地是否存在SSH keys<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ls -al ~/.ssh</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>ssh-keygen生成新的id_rsa和id_rsa.pub文件（<em>rsa为加密方式</em>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置保存公钥和私钥的文件位置和文件名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Enter file in which to save the key (/Users/you/.ssh/id_rsa): [Press enter]</div></pre></td></tr></table></figure>
+</li>
+<li><p>SSH密钥使用密码（可不配置）</p>
+</li>
+<li>在git仓库中配置(<em>如果将id_rsa.pub放到另外机器的 ~/.ssh.authorized_keys中，可以通过ssh和scp无密码登录访问</em>)</li>
+</ul>
+</li>
+</ol>
+<h2 id="GIT-Config-配置相关"><a href="#GIT-Config-配置相关" class="headerlink" title="GIT Config 配置相关"></a>GIT Config 配置相关</h2><ol>
+<li><p>修改git请求URL中的协议头</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --global url.&quot;https://&quot;.insteadOf git://</div></pre></td></tr></table></figure>
+<blockquote>
+<p><strong>[解决问题]</strong>bower ECMDERR Failed to execute “git ls-remote … exit code of #128</p>
+</blockquote>
+</li>
+<li><p>查看当前配置信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git config --list</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置操作</p>
+<ul>
+<li><p>添加配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 添加 &apos;git add .&apos; 的全局别名</div><div class="line">git config --global alias.a &apos;add .&apos;</div></pre></td></tr></table></figure>
+</li>
+<li><p>删除配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">// 删除别名</div><div class="line">git config --unset alias.s</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>根据git仓库配置不同的用户名和密码</p>
+<ul>
+<li>根据不同的用户名生成不同的SSH keys</li>
+<li><p>去除全局的user.name和user.email的设置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git config --global --unset user.name</div><div class="line">git config --global --unset user.email</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改用户下的config文件（<em>~/.ssh/config</em>）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">#Default Git</div><div class="line">Host github.com</div><div class="line">    HostName github.com</div><div class="line">    User code41</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile ~/.ssh/id_rsa.code41.pub</div><div class="line"></div><div class="line">Host github.com</div><div class="line">    HostName github.com</div><div class="line">    User naruto900814</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile ~/.ssh/id_rsa.naruto900814.pub</div><div class="line"></div><div class="line">Host demo.com</div><div class="line">    HostName demo.com</div><div class="line">    User shaw</div><div class="line">    PreferredAuthentications publickey</div><div class="line">    IdentityFile ~/.ssh/id_rsa.shaw.pub</div></pre></td></tr></table></figure>
+<blockquote>
+<p>以上配置，访问github时，根据不同的用户名，使用不同的公钥文件；通过在git的repo中配置不同的user就可以使用以上配置按不同用户提交；当git提交到不同的GIT仓库的时候就会使用不同配置，从而使用不同的账户和公钥文件。</p>
+</blockquote>
+</li>
+<li><p>删除历史信任记录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">rm ~/.ssh/known_hosts</div></pre></td></tr></table></figure>
+</li>
+<li><p>禁用伪终端分配</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh -T shaw@demo.com</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;GIT-常用命令及基本操作&quot;&gt;&lt;a href=&quot;#GIT-常用命令及基本操作&quot; class=&quot;headerlink&quot; title=&quot;GIT 常用命令及基本操作&quot;&gt;&lt;/a&gt;GIT 常用命令及基本操作&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;查看本地文件的git的状态&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;git status&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;本地工程初始化&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;git init&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;为本地仓库绑定远程仓库地址&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;1&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;div class=&quot;line&quot;&gt;git remote add origin URL&lt;/div&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="git" scheme="http://blog.code41.me/tags/git/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java中基本数据类型和对象数据类型</title>
+    <link href="http://blog.code41.me/2015/06/23/java-the-difference-of-long-Long/"/>
+    <id>http://blog.code41.me/2015/06/23/java-the-difference-of-long-Long/</id>
+    <published>2015-06-23T14:33:55.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Java中基本数据类型和对象数据类型"><a href="#Java中基本数据类型和对象数据类型" class="headerlink" title="Java中基本数据类型和对象数据类型"></a>Java中基本数据类型和对象数据类型</h2><p>最近打算对一些基础的东西进行一下学习，在一般的java开发中经常会看到long和Long或者int和Integer的类型的使用，这些都有什么区别呢。</p>
+<blockquote>
+<p>int和long都是基本数据类型，没有一些构造方法和equals方法的存在，而对象数据类型就像普通的对象Class一样，是含有构造函数和一些常用的方法的。</p>
+</blockquote>
+<h4 id="包装类"><a href="#包装类" class="headerlink" title="包装类"></a>包装类</h4><blockquote>
+<p>上面这种Long类型的类似的也叫做<strong>包装类</strong>，在java中有时候的运算必须是两个类对象之间进行的，不充许对象与数字之间进行运算。所以需要有一个对象，这个对象把数字进行了一下包装，这样这个对象就可以和另一个对象进行运算了。</p>
+</blockquote>
+<a id="more"></a>
+<p>常见的举例就是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">long</span> param = <span class="number">100L</span>;</div><div class="line">Long param2 = Long.valueOf(<span class="string">"100"</span>);</div></pre></td></tr></table></figure></p>
+<p>就像上面的声明一样，其实param和param2是相等的，但是只有Long才含有valueOf的方法把一些其他的类型转换成long。<br>同时Long类型现在有了自动封装的方法，通过类似变量声明的方式就能直接创建包装类的对象。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Long param = <span class="number">100L</span>;</div></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Java中基本数据类型和对象数据类型&quot;&gt;&lt;a href=&quot;#Java中基本数据类型和对象数据类型&quot; class=&quot;headerlink&quot; title=&quot;Java中基本数据类型和对象数据类型&quot;&gt;&lt;/a&gt;Java中基本数据类型和对象数据类型&lt;/h2&gt;&lt;p&gt;最近打算对一些基础的东西进行一下学习，在一般的java开发中经常会看到long和Long或者int和Integer的类型的使用，这些都有什么区别呢。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;int和long都是基本数据类型，没有一些构造方法和equals方法的存在，而对象数据类型就像普通的对象Class一样，是含有构造函数和一些常用的方法的。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h4 id=&quot;包装类&quot;&gt;&lt;a href=&quot;#包装类&quot; class=&quot;headerlink&quot; title=&quot;包装类&quot;&gt;&lt;/a&gt;包装类&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;上面这种Long类型的类似的也叫做&lt;strong&gt;包装类&lt;/strong&gt;，在java中有时候的运算必须是两个类对象之间进行的，不充许对象与数字之间进行运算。所以需要有一个对象，这个对象把数字进行了一下包装，这样这个对象就可以和另一个对象进行运算了。&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="基本数据类型" scheme="http://blog.code41.me/tags/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+    
+      <category term="对象数据类型" scheme="http://blog.code41.me/tags/%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>使用XCode7在ios设备上真机调试</title>
+    <link href="http://blog.code41.me/2015/06/19/Run-ios-code-on-XCode-7/"/>
+    <id>http://blog.code41.me/2015/06/19/Run-ios-code-on-XCode-7/</id>
+    <published>2015-06-19T15:20:41.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="使用XCode7在ios设备上真机调试"><a href="#使用XCode7在ios设备上真机调试" class="headerlink" title="使用XCode7在ios设备上真机调试"></a>使用XCode7在ios设备上真机调试</h2><ol>
+<li>下载安装<a href="https://developer.apple.com/xcode/downloads/" target="_blank" rel="external">XCode7</a> </li>
+<li>安装打开XCode7，打开 perferences ，登录苹果开发者帐号</li>
+<li>打开ios项目，或者创建简单的HelloWorld</li>
+<li>选择项目运行的设备 <font color="red"><em>Product =&gt; Destination =&gt; IOS Devices</em></font></li>
+<li><font color="red"><em>Bundle Identifier</em></font> 选择team为开发者帐号</li>
+<li>运行项目</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;使用XCode7在ios设备上真机调试&quot;&gt;&lt;a href=&quot;#使用XCode7在ios设备上真机调试&quot; class=&quot;headerlink&quot; title=&quot;使用XCode7在ios设备上真机调试&quot;&gt;&lt;/a&gt;使用XCode7在ios设备上真机调试&lt;/h2&gt;&lt;ol&gt;
+
+    
+    </summary>
+    
+      <category term="ios" scheme="http://blog.code41.me/categories/ios/"/>
+    
+    
+      <category term="ios" scheme="http://blog.code41.me/tags/ios/"/>
+    
+      <category term="xcode7" scheme="http://blog.code41.me/tags/xcode7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Markdown常用语法</title>
+    <link href="http://blog.code41.me/2015/03/24/markdown/"/>
+    <id>http://blog.code41.me/2015/03/24/markdown/</id>
+    <published>2015-03-23T23:46:18.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="文字基础"><a href="#文字基础" class="headerlink" title="文字基础"></a>文字基础</h2><p>*斜体* <em>斜体</em><br>_斜体_ <em>斜体</em><br>**加粗** <strong>加粗</strong><br>__加粗__ <strong>加粗</strong> </p>
+<p>this is <code>important</code> text. `important`</p>
+<a id="more"></a>
+<h2 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h2><blockquote>
+<p>缩进</p>
+<blockquote>
+<p>缩进缩进</p>
+<blockquote>
+<p>123</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><h1 id="Big-title-h1"><a href="#Big-title-h1" class="headerlink" title="Big title (h1)"></a>Big title (h1)</h1><h2 id="Middle-title-h2"><a href="#Middle-title-h2" class="headerlink" title="Middle title (h2)"></a>Middle title (h2)</h2><h3 id="Smaller-title-h3"><a href="#Smaller-title-h3" class="headerlink" title="Smaller title (h3)"></a>Smaller title (h3)</h3><h4 id="and-so-on-hX"><a href="#and-so-on-hX" class="headerlink" title="and so on (hX)"></a>and so on (hX)</h4><h5 id="and-so-on-hX-1"><a href="#and-so-on-hX-1" class="headerlink" title="and so on (hX)"></a>and so on (hX)</h5><h6 id="and-so-on-hX-2"><a href="#and-so-on-hX-2" class="headerlink" title="and so on (hX)"></a>and so on (hX)</h6><h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ul>
+<li>bullets can be <code>-</code>, <code>+</code>, or <code>*</code></li>
+<li>bullet list 1</li>
+<li><p>bullet list 2</p>
+<ul>
+<li>sub item 1</li>
+<li><p>sub item 2</p>
+<p>  with indented text inside</p>
+</li>
+</ul>
+</li>
+<li><p>bullet list 3</p>
+</li>
+</ul>
+<ul>
+<li>bullet list 4</li>
+</ul>
+<ul>
+<li>bullet list 5</li>
+</ul>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p>This is an <a href="http://blog.code41.me/">example inline link</a> and <a href="http://blog.code41.me/" title="code41&#39;s blog">another one with a title</a>.</p>
+<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>A sample image :</p>
+<p><img src="http://www.revolunet.com/static/parisjs8/img/logo-revolunet-carre.jpg" alt="revolunet logo" title="revolunet logo"></p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>使用 <strong>_```</strong>  对代码类型进行声明</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> Class Test extends BaseTest implements BaseInterface &#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String testStr = <span class="string">"Hello World"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span> <span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        System.out.println(testStr);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>Some Javascript code :</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> config = &#123;</div><div class="line">    <span class="attr">duration</span>: <span class="number">5</span>,</div><div class="line">    <span class="attr">comment</span>: <span class="string">'WTF'</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// callbacks beauty un action</span></div><div class="line">async_call(<span class="string">'/path/to/api'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">json</span>) </span>&#123;</div><div class="line">    another_call(json, <span class="function"><span class="keyword">function</span>(<span class="params">result2</span>) </span>&#123;</div><div class="line">        another_another_call(result2, <span class="function"><span class="keyword">function</span>(<span class="params">result3</span>) </span>&#123;</div><div class="line">            another_another_another_call(result3, <span class="function"><span class="keyword">function</span>(<span class="params">result4</span>) </span>&#123;</div><div class="line">                alert(<span class="string">'And if all went well, i got my result :)'</span>);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><h3 id="表格的用法"><a href="#表格的用法" class="headerlink" title="表格的用法"></a>表格的用法</h3><table>
+<thead>
+<tr>
+<th>Year</th>
+<th>Temperature (low)</th>
+<th>Temperature (high)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1900</td>
+<td>-10</td>
+<td>25</td>
+</tr>
+<tr>
+<td>1910</td>
+<td>-15</td>
+<td>30</td>
+</tr>
+<tr>
+<td>1920</td>
+<td>-10</td>
+<td>32</td>
+</tr>
+</tbody>
+</table>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;文字基础&quot;&gt;&lt;a href=&quot;#文字基础&quot; class=&quot;headerlink&quot; title=&quot;文字基础&quot;&gt;&lt;/a&gt;文字基础&lt;/h2&gt;&lt;p&gt;*斜体* &lt;em&gt;斜体&lt;/em&gt;&lt;br&gt;_斜体_ &lt;em&gt;斜体&lt;/em&gt;&lt;br&gt;**加粗** &lt;strong&gt;加粗&lt;/strong&gt;&lt;br&gt;__加粗__ &lt;strong&gt;加粗&lt;/strong&gt; &lt;/p&gt;
+&lt;p&gt;this is &lt;code&gt;important&lt;/code&gt; text. `important`&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="markdown" scheme="http://blog.code41.me/tags/markdown/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Let&#39;s Begin</title>
+    <link href="http://blog.code41.me/2015/03/22/Let-s-Begin/"/>
+    <id>http://blog.code41.me/2015/03/22/Let-s-Begin/</id>
+    <published>2015-03-22T15:50:50.000Z</published>
+    <updated>2017-02-09T01:53:44.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="有一些东西需要一些开始，那么就从现在开始吧"><a href="#有一些东西需要一些开始，那么就从现在开始吧" class="headerlink" title="有一些东西需要一些开始，那么就从现在开始吧~"></a>有一些东西需要一些开始，那么就从现在开始吧~</h2><h3 id="快两年了，还是那句话。Fighting！！"><a href="#快两年了，还是那句话。Fighting！！" class="headerlink" title="快两年了，还是那句话。Fighting！！"></a>快两年了，还是那句话。Fighting！！</h3>]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;有一些东西需要一些开始，那么就从现在开始吧&quot;&gt;&lt;a href=&quot;#有一些东西需要一些开始，那么就从现在开始吧&quot; class=&quot;headerlink&quot; title=&quot;有一些东西需要一些开始，那么就从现在开始吧~&quot;&gt;&lt;/a&gt;有一些东西需要一些开始，那么就从现在开始吧~
+    
+    </summary>
+    
+    
+      <category term="first" scheme="http://blog.code41.me/tags/first/"/>
+    
+  </entry>
+  
+</feed>
