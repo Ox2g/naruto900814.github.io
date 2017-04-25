@@ -31,7 +31,7 @@
 
 
 
-  <meta name="keywords" content="java,基础,集合类,List,Map," />
+  <meta name="keywords" content="NodeJS,NVM," />
 
 
 
@@ -42,39 +42,16 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="ArrayList的实现原理
-ArrayList是基于数组的方式实现，无容量的限制；
-ArrayList在插入元素时可能会扩容，删除元素并不会减少数组容量，大部分都是使用System.arraycopy进行深拷贝出新的对象数组；
-由于ArrayList是基于数组的方式实现，所以查询是O(1)复杂度；
-线程不安全。
-
-Vector的实现原理
-Vector和ArrayList的实现方式一样，只是关键方">
+<meta name="description" content="问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本使用”nvm alias default”设置默认node版本后避免shell重启后默认nvm的node版本失效问题1nvm alias default v6.10.2">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常见的集合类概念和问题总结">
-<meta property="og:url" content="http://code41.me/2016/05/18/basic-knowledge-for-collection-and-map/index.html">
+<meta property="og:title" content="NVM默认Node设置">
+<meta property="og:url" content="http://code41.me/2017/04/24/nvm-default-alias/index.html">
 <meta property="og:site_name" content="code41's blog">
-<meta property="og:description" content="ArrayList的实现原理
-ArrayList是基于数组的方式实现，无容量的限制；
-ArrayList在插入元素时可能会扩容，删除元素并不会减少数组容量，大部分都是使用System.arraycopy进行深拷贝出新的对象数组；
-由于ArrayList是基于数组的方式实现，所以查询是O(1)复杂度；
-线程不安全。
-
-Vector的实现原理
-Vector和ArrayList的实现方式一样，只是关键方">
-<meta property="og:image" content="http://code41.me/2016/05/18/basic-knowledge-for-collection-and-map/relation-map-for-collection-and-map.png">
-<meta property="og:updated_time" content="2017-02-09T01:53:44.000Z">
+<meta property="og:description" content="问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本使用”nvm alias default”设置默认node版本后避免shell重启后默认nvm的node版本失效问题1nvm alias default v6.10.2">
+<meta property="og:updated_time" content="2017-04-24T02:00:09.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常见的集合类概念和问题总结">
-<meta name="twitter:description" content="ArrayList的实现原理
-ArrayList是基于数组的方式实现，无容量的限制；
-ArrayList在插入元素时可能会扩容，删除元素并不会减少数组容量，大部分都是使用System.arraycopy进行深拷贝出新的对象数组；
-由于ArrayList是基于数组的方式实现，所以查询是O(1)复杂度；
-线程不安全。
-
-Vector的实现原理
-Vector和ArrayList的实现方式一样，只是关键方">
-<meta name="twitter:image" content="http://code41.me/2016/05/18/basic-knowledge-for-collection-and-map/relation-map-for-collection-and-map.png">
+<meta name="twitter:title" content="NVM默认Node设置">
+<meta name="twitter:description" content="问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本使用”nvm alias default”设置默认node版本后避免shell重启后默认nvm的node版本失效问题1nvm alias default v6.10.2">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -84,7 +61,7 @@ Vector和ArrayList的实现方式一样，只是关键方">
   };
 </script>
 
-  <title> 常见的集合类概念和问题总结 | code41's blog </title>
+  <title> NVM默认Node设置 | code41's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -193,7 +170,7 @@ Vector和ArrayList的实现方式一样，只是关键方">
           
           
             
-              常见的集合类概念和问题总结
+              NVM默认Node设置
             
           
         </h1>
@@ -202,8 +179,8 @@ Vector和ArrayList的实现方式一样，只是关键方">
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2016-05-18T21:27:32+08:00" content="2016-05-18">
-            2016-05-18
+          <time itemprop="dateCreated" datetime="2017-04-24T09:47:47+08:00" content="2017-04-24">
+            2017-04-24
           </time>
         </span>
 
@@ -212,20 +189,8 @@ Vector和ArrayList的实现方式一样，只是关键方">
             &nbsp; | &nbsp; 分类于
             
               <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/java/" itemprop="url" rel="index">
-                  <span itemprop="name">java</span>
-                </a>
-              </span>
-
-              
-              
-                ， 
-              
-
-            
-              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/java/基础知识/" itemprop="url" rel="index">
-                  <span itemprop="name">基础知识</span>
+                <a href="/categories/NodeJS/" itemprop="url" rel="index">
+                  <span itemprop="name">NodeJS</span>
                 </a>
               </span>
 
@@ -248,90 +213,7 @@ Vector和ArrayList的实现方式一样，只是关键方">
       
 
       
-        <span itemprop="articleBody"><h3 id="ArrayList的实现原理"><a href="#ArrayList的实现原理" class="headerlink" title="ArrayList的实现原理"></a>ArrayList的实现原理</h3><ol>
-<li>ArrayList是基于数组的方式实现，无容量的限制；</li>
-<li>ArrayList在插入元素时可能会扩容，删除元素并不会减少数组容量，大部分都是使用System.arraycopy进行深拷贝出新的对象数组；</li>
-<li>由于ArrayList是基于数组的方式实现，所以查询是O(1)复杂度；</li>
-<li>线程不安全。</li>
-</ol>
-<h3 id="Vector的实现原理"><a href="#Vector的实现原理" class="headerlink" title="Vector的实现原理"></a>Vector的实现原理</h3><ol>
-<li>Vector和ArrayList的实现方式一样，只是关键方法都添加Synchronize的关键字来保证线程安全；</li>
-<li>容量扩展上和ArrayList不同，可以再初始化创建Vector时，传入增长值来控制每次扩展大小；</li>
-<li>线程安全的，由于锁的机制，操作耗费性能较大。</li>
-</ol>
-<h3 id="LinkedList的实现原理"><a href="#LinkedList的实现原理" class="headerlink" title="LinkedList的实现原理"></a>LinkedList的实现原理</h3><ol>
-<li>LinkedList是基于双向链表实现的；</li>
-<li>创建对象后，默认插入首位，只需要更改位置的前后指针就可以完成插入操作；</li>
-<li>查找元素时，遍历整个链表；</li>
-<li>删除元素时，遍历链表查找到元素后，更改前后元素指针，删除链表上的元素；</li>
-<li>线程不安全。</li>
-</ol>
-<h3 id="Stack的实现原理"><a href="#Stack的实现原理" class="headerlink" title="Stack的实现原理"></a>Stack的实现原理</h3><ol>
-<li>继承于Vector类，额外实现了pop()、push()、peek()的方法；</li>
-<li>支持后进先出(LIFO)；</li>
-<li>线程安全的。</li>
-</ol>
-<h3 id="ArrayList的大小是如何自动增加的"><a href="#ArrayList的大小是如何自动增加的" class="headerlink" title="ArrayList的大小是如何自动增加的"></a>ArrayList的大小是如何自动增加的</h3><ol>
-<li>ArrayList在进行add操作时会对大小进行判断，如果不够大，会增长50%；</li>
-<li>如果容量不足时，ArrayList执行add方法的过程时，新建一个长度更长的数组，使用System.arraycopy()方法将旧数组拷贝到新数组。<blockquote>
-<p>System.arraycopy()方法为浅拷贝，只是指针的引用。</p>
-</blockquote>
-</li>
-</ol>
-<h3 id="ArrayList初始化创建赋值方式"><a href="#ArrayList初始化创建赋值方式" class="headerlink" title="ArrayList初始化创建赋值方式"></a>ArrayList初始化创建赋值方式</h3><ol>
-<li>无参创建：创建一个空数组填充的ArrayList，长度为0；</li>
-<li>根据size大小创建：根据传入数字，创建大小一样的数组；</li>
-<li>根据Collection对象创建：根据传入Collection对象的toArray()返回结果判断size，并将Collection的toArray()返回值，使用Arrays.copyOf方法赋值；</li>
-<li>初始创建的空ArrayList对象会在第一次add方法调用的时候，使用默认大小10进行数组创建。</li>
-</ol>
-<h3 id="如何复制某个ArrayList到另一个ArrayList"><a href="#如何复制某个ArrayList到另一个ArrayList" class="headerlink" title="如何复制某个ArrayList到另一个ArrayList"></a>如何复制某个ArrayList到另一个ArrayList</h3><ol>
-<li>使用clone方法：ArrayList newArray = oldArray.clone();</li>
-<li>使用ArrayList构造方法：ArrayList myObject = new ArrayList(myTempObject);</li>
-<li>使用Collection的copy方法<blockquote>
-<p>第3种为深拷贝，其他为浅拷贝</p>
-</blockquote>
-</li>
-</ol>
-<h3 id="评估ArrayList的增加或者删除效率低的原因，如何改善？"><a href="#评估ArrayList的增加或者删除效率低的原因，如何改善？" class="headerlink" title="评估ArrayList的增加或者删除效率低的原因，如何改善？"></a>评估ArrayList的增加或者删除效率低的原因，如何改善？</h3><p>删除和添加都是依赖于System.arraycopy()方法，所以效率比较低。<br><br>改善：使用LinkedList进行频繁的添加和删除操作。</p>
-<h3 id="ArrayList和LinkedList的区别"><a href="#ArrayList和LinkedList的区别" class="headerlink" title="ArrayList和LinkedList的区别"></a>ArrayList和LinkedList的区别</h3><ol>
-<li>两者都是线程不安全的。</li>
-<li>ArrayList是基于对象数组实现，插入和删除操作性能消耗较大；而LinkedList是基于链表方式实现的，插入和删除性能消耗小，只需要操作指针就可以。</li>
-<li>ArrayList查询时时间复杂度O(1)，故ArrayList查询性能好；而LinkedList需要遍历，故查询性能LinkedList较差。</li>
-</ol>
-<h3 id="ArrayList和Vector的区别"><a href="#ArrayList和Vector的区别" class="headerlink" title="ArrayList和Vector的区别"></a>ArrayList和Vector的区别</h3><ol>
-<li>两者都实现了List接口，都是通过对象数组进行数据存储。</li>
-<li>Vector的方法是使用synchronized关键字进行了同步锁定，是线程安全的；而ArrayList是线程不安全的。</li>
-<li>ArrayList在容量不足的情况下，会新增50%的空间；而Vector会新增100%的空间；但是两者在插入新对象时都是使用Arrays.copyOf()方法，将老对象拷贝到扩充后的对象数组中的。</li>
-</ol>
-<h3 id="ListIterator和Iterator的区别"><a href="#ListIterator和Iterator的区别" class="headerlink" title="ListIterator和Iterator的区别"></a>ListIterator和Iterator的区别</h3><ol>
-<li>都有hasNext和next方法，都可以进行向后的遍历。</li>
-<li>都含有remove方法，都可以对元素进行删除。</li>
-<li>ListIterator含有hasPrevious和previous方法，可以进行向前遍历。</li>
-<li>ListIterator含有add和set方法，除了删除还可以完成元素的添加和修改操作。</li>
-<li>ListIterator可以通过nextIndex和previousIndex获取元素的索引位置。</li>
-</ol>
-<h3 id="ConcurrentHashMap的实现原理"><a href="#ConcurrentHashMap的实现原理" class="headerlink" title="ConcurrentHashMap的实现原理"></a>ConcurrentHashMap的实现原理</h3><ol>
-<li>实现原理和HashMap类似，但是引入了segment，故每次put操作只锁某一个segment，而对其他segment无影响。</li>
-<li>hash的实现是final类型，故每个value的key都不会重复。</li>
-<li>get操作的变量是volatile的变量，保证了获取之前都是写操作完成的，故保证了数据的实时性。</li>
-</ol>
-<h3 id="HashMap的实现原理"><a href="#HashMap的实现原理" class="headerlink" title="HashMap的实现原理"></a>HashMap的实现原理</h3><ol>
-<li>采用数组方式存储key和value构成的Entry对象，无容量限制；</li>
-<li>基于key的hash寻找在Entry数组中的位置，对于hash冲突采用链表方式处理；</li>
-<li>HashMap进行元素添加的时候，先查找是否已存在，如果已存在就覆盖旧的value，并返回就得value，如果不存在，添加新的Entry对象；</li>
-<li>HashMap在添加元素时，如果空间不够，自动扩展空间，扩展操作会创建新的Entry数组，并将老的Entry数组拷贝到新的数组中；</li>
-<li>线程不安全。</li>
-</ol>
-<h3 id="TreeMap的实现原理"><a href="#TreeMap的实现原理" class="headerlink" title="TreeMap的实现原理"></a>TreeMap的实现原理</h3><ol>
-<li>TreeMap是基于红黑树实现的，无容量限制；</li>
-<li>TreeMap是线程不安全的。</li>
-</ol>
-<h3 id="HashSet和TreeSet的实现原理"><a href="#HashSet和TreeSet的实现原理" class="headerlink" title="HashSet和TreeSet的实现原理"></a>HashSet和TreeSet的实现原理</h3><ol>
-<li>HashSet是基于HashMap实现的；</li>
-<li>TreeSet是基于TreeMap实现的；</li>
-<li>线程不安全</li>
-</ol>
-<p>Java集合类的关系图谱如下所示：<br><img src="/2016/05/18/basic-knowledge-for-collection-and-map/relation-map-for-collection-and-map.png" alt="Java集合类关系图谱"></p>
+        <span itemprop="articleBody"><h4 id="问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本"><a href="#问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本" class="headerlink" title="问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本"></a>问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本</h4><p>使用”nvm alias default”设置默认node版本后避免shell重启后默认nvm的node版本失效问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvm alias default v6.10.2</div></pre></td></tr></table></figure></p>
 </span>
       
     </div>
@@ -340,15 +222,9 @@ Vector和ArrayList的实现方式一样，只是关键方">
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag">#java</a>
+            <a href="/tags/NodeJS/" rel="tag">#NodeJS</a>
           
-            <a href="/tags/基础/" rel="tag">#基础</a>
-          
-            <a href="/tags/集合类/" rel="tag">#集合类</a>
-          
-            <a href="/tags/List/" rel="tag">#List</a>
-          
-            <a href="/tags/Map/" rel="tag">#Map</a>
+            <a href="/tags/NVM/" rel="tag">#NVM</a>
           
         </div>
       
@@ -357,13 +233,11 @@ Vector和ArrayList的实现方式一样，只是关键方">
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/" rel="prev">java中String、StringBuffer和StringBuilder的区别</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/04/27/jvm-gc-algorithm/" rel="next">JVM虚拟机GC回收算法</a>
+              <a href="/2017/03/09/jvm-gc/" rel="next">GC概述</a>
             
           </div>
         </div>
@@ -395,7 +269,7 @@ Vector和ArrayList的实现方式一样，只是关键方">
 
             
               <!-- 畅言评论 -->
-              <div id="SOHUCS" sid="常见的集合类概念和问题总结"></div>
+              <div id="SOHUCS" sid="NVM默认Node设置"></div>
               <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
               <script type="text/javascript">
                 window.changyan.api.config({appid: 'cysXNh7qW', conf: 'prod_bc872bce39d564818454ac7040ac4126'});
@@ -501,7 +375,7 @@ Vector和ArrayList的实现方式一样，只是关键方">
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList的实现原理"><span class="nav-number">1.</span> <span class="nav-text">ArrayList的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Vector的实现原理"><span class="nav-number">2.</span> <span class="nav-text">Vector的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LinkedList的实现原理"><span class="nav-number">3.</span> <span class="nav-text">LinkedList的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stack的实现原理"><span class="nav-number">4.</span> <span class="nav-text">Stack的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList的大小是如何自动增加的"><span class="nav-number">5.</span> <span class="nav-text">ArrayList的大小是如何自动增加的</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList初始化创建赋值方式"><span class="nav-number">6.</span> <span class="nav-text">ArrayList初始化创建赋值方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何复制某个ArrayList到另一个ArrayList"><span class="nav-number">7.</span> <span class="nav-text">如何复制某个ArrayList到另一个ArrayList</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#评估ArrayList的增加或者删除效率低的原因，如何改善？"><span class="nav-number">8.</span> <span class="nav-text">评估ArrayList的增加或者删除效率低的原因，如何改善？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList和LinkedList的区别"><span class="nav-number">9.</span> <span class="nav-text">ArrayList和LinkedList的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ArrayList和Vector的区别"><span class="nav-number">10.</span> <span class="nav-text">ArrayList和Vector的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ListIterator和Iterator的区别"><span class="nav-number">11.</span> <span class="nav-text">ListIterator和Iterator的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ConcurrentHashMap的实现原理"><span class="nav-number">12.</span> <span class="nav-text">ConcurrentHashMap的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashMap的实现原理"><span class="nav-number">13.</span> <span class="nav-text">HashMap的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TreeMap的实现原理"><span class="nav-number">14.</span> <span class="nav-text">TreeMap的实现原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HashSet和TreeSet的实现原理"><span class="nav-number">15.</span> <span class="nav-text">HashSet和TreeSet的实现原理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本"><span class="nav-number">1.</span> <span class="nav-text">问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>code41&#39;s blog</title>
-  <subtitle>一个热爱瞎折腾的程序猴</subtitle>
+  <subtitle>奔三...</subtitle>
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://blog.code41.me/"/>
-  <updated>2017-03-10T03:11:26.000Z</updated>
-  <id>http://blog.code41.me/</id>
+  <link href="http://code41.me/"/>
+  <updated>2017-04-24T02:00:09.000Z</updated>
+  <id>http://code41.me/</id>
   
   <author>
     <name>code41</name>
@@ -16,11 +16,36 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>NVM默认Node设置</title>
+    <link href="http://code41.me/2017/04/24/nvm-default-alias/"/>
+    <id>http://code41.me/2017/04/24/nvm-default-alias/</id>
+    <published>2017-04-24T01:47:47.000Z</published>
+    <updated>2017-04-24T02:00:09.000Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本"><a href="#问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本" class="headerlink" title="问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本"></a>问题：安装NVM后，每次重启Shell后都需要使用”nvm use”重新设置node版本</h4><p>使用”nvm alias default”设置默认node版本后避免shell重启后默认nvm的node版本失效问题<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">nvm alias default v6.10.2</div></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本&quot;&gt;&lt;a href=&quot;#问题：安装NVM后，每次重启Shell后都需要使用”nvm-use”重新设置node版本&quot; class=&quot;headerlink&quot; title=&quot;问题：安
+    
+    </summary>
+    
+      <category term="NodeJS" scheme="http://code41.me/categories/NodeJS/"/>
+    
+    
+      <category term="NodeJS" scheme="http://code41.me/tags/NodeJS/"/>
+    
+      <category term="NVM" scheme="http://code41.me/tags/NVM/"/>
+    
+  </entry>
+  
+  <entry>
     <title>GC概述</title>
-    <link href="http://blog.code41.me/2017/03/09/jvm-gc/"/>
-    <id>http://blog.code41.me/2017/03/09/jvm-gc/</id>
+    <link href="http://code41.me/2017/03/09/jvm-gc/"/>
+    <id>http://code41.me/2017/03/09/jvm-gc/</id>
     <published>2017-03-09T01:37:23.000Z</published>
-    <updated>2017-03-10T03:11:26.000Z</updated>
+    <updated>2017-03-10T06:02:29.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="GC概述"><a href="#GC概述" class="headerlink" title="GC概述"></a>GC概述</h3><h4 id="1-什么是GC"><a href="#1-什么是GC" class="headerlink" title="1. 什么是GC"></a>1. 什么是GC</h4><ul>
 <li>Garbage Collection</li>
@@ -376,20 +401,20 @@
     </summary>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="JVM" scheme="http://blog.code41.me/tags/JVM/"/>
+      <category term="JVM" scheme="http://code41.me/tags/JVM/"/>
     
-      <category term="GC" scheme="http://blog.code41.me/tags/GC/"/>
+      <category term="GC" scheme="http://code41.me/tags/GC/"/>
     
   </entry>
   
   <entry>
     <title>并发锁ReentrantLock的优缺点</title>
-    <link href="http://blog.code41.me/2016/05/26/reentrantlock/"/>
-    <id>http://blog.code41.me/2016/05/26/reentrantlock/</id>
+    <link href="http://code41.me/2016/05/26/reentrantlock/"/>
+    <id>http://code41.me/2016/05/26/reentrantlock/</id>
     <published>2016-05-26T12:50:04.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -413,27 +438,27 @@
     
     </summary>
     
-      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+      <category term="java" scheme="http://code41.me/categories/java/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="并发包" scheme="http://blog.code41.me/tags/%E5%B9%B6%E5%8F%91%E5%8C%85/"/>
+      <category term="并发包" scheme="http://code41.me/tags/%E5%B9%B6%E5%8F%91%E5%8C%85/"/>
     
-      <category term="ReentrantLock" scheme="http://blog.code41.me/tags/ReentrantLock/"/>
+      <category term="ReentrantLock" scheme="http://code41.me/tags/ReentrantLock/"/>
     
-      <category term="多线程" scheme="http://blog.code41.me/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+      <category term="多线程" scheme="http://code41.me/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
     
   </entry>
   
   <entry>
     <title>不可变类的变量声明</title>
-    <link href="http://blog.code41.me/2016/05/24/variable-of-immutable-class/"/>
-    <id>http://blog.code41.me/2016/05/24/variable-of-immutable-class/</id>
+    <link href="http://code41.me/2016/05/24/variable-of-immutable-class/"/>
+    <id>http://code41.me/2016/05/24/variable-of-immutable-class/</id>
     <published>2016-05-24T07:01:07.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -467,21 +492,21 @@
     
     </summary>
     
-      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+      <category term="java" scheme="http://code41.me/categories/java/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
   </entry>
   
   <entry>
     <title>排序算法的时间复杂度</title>
-    <link href="http://blog.code41.me/2016/05/24/the-time-complexity-of-the-sorted-algorithm/"/>
-    <id>http://blog.code41.me/2016/05/24/the-time-complexity-of-the-sorted-algorithm/</id>
+    <link href="http://code41.me/2016/05/24/the-time-complexity-of-the-sorted-algorithm/"/>
+    <id>http://code41.me/2016/05/24/the-time-complexity-of-the-sorted-algorithm/</id>
     <published>2016-05-24T03:23:44.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -495,25 +520,25 @@
     
     </summary>
     
-      <category term="算法" scheme="http://blog.code41.me/categories/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="http://code41.me/categories/%E7%AE%97%E6%B3%95/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/%E7%AE%97%E6%B3%95/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/%E7%AE%97%E6%B3%95/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="算法" scheme="http://blog.code41.me/tags/%E7%AE%97%E6%B3%95/"/>
+      <category term="算法" scheme="http://code41.me/tags/%E7%AE%97%E6%B3%95/"/>
     
-      <category term="排序" scheme="http://blog.code41.me/tags/%E6%8E%92%E5%BA%8F/"/>
+      <category term="排序" scheme="http://code41.me/tags/%E6%8E%92%E5%BA%8F/"/>
     
-      <category term="时间复杂度" scheme="http://blog.code41.me/tags/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
+      <category term="时间复杂度" scheme="http://code41.me/tags/%E6%97%B6%E9%97%B4%E5%A4%8D%E6%9D%82%E5%BA%A6/"/>
     
   </entry>
   
   <entry>
     <title>java中String、StringBuffer和StringBuilder的区别</title>
-    <link href="http://blog.code41.me/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/"/>
-    <id>http://blog.code41.me/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/</id>
+    <link href="http://code41.me/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/"/>
+    <id>http://code41.me/2016/05/24/the-difference-between-string-stringbuffer-and-stringbuilder/</id>
     <published>2016-05-24T03:12:44.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -562,23 +587,23 @@
     
     </summary>
     
-      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+      <category term="java" scheme="http://code41.me/categories/java/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="String" scheme="http://blog.code41.me/tags/String/"/>
+      <category term="String" scheme="http://code41.me/tags/String/"/>
     
   </entry>
   
   <entry>
     <title>常见的集合类概念和问题总结</title>
-    <link href="http://blog.code41.me/2016/05/18/basic-knowledge-for-collection-and-map/"/>
-    <id>http://blog.code41.me/2016/05/18/basic-knowledge-for-collection-and-map/</id>
+    <link href="http://code41.me/2016/05/18/basic-knowledge-for-collection-and-map/"/>
+    <id>http://code41.me/2016/05/18/basic-knowledge-for-collection-and-map/</id>
     <published>2016-05-18T13:27:32.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -675,27 +700,27 @@
     
     </summary>
     
-      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+      <category term="java" scheme="http://code41.me/categories/java/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="集合类" scheme="http://blog.code41.me/tags/%E9%9B%86%E5%90%88%E7%B1%BB/"/>
+      <category term="集合类" scheme="http://code41.me/tags/%E9%9B%86%E5%90%88%E7%B1%BB/"/>
     
-      <category term="List" scheme="http://blog.code41.me/tags/List/"/>
+      <category term="List" scheme="http://code41.me/tags/List/"/>
     
-      <category term="Map" scheme="http://blog.code41.me/tags/Map/"/>
+      <category term="Map" scheme="http://code41.me/tags/Map/"/>
     
   </entry>
   
   <entry>
     <title>JVM虚拟机GC回收算法</title>
-    <link href="http://blog.code41.me/2016/04/27/jvm-gc-algorithm/"/>
-    <id>http://blog.code41.me/2016/04/27/jvm-gc-algorithm/</id>
+    <link href="http://code41.me/2016/04/27/jvm-gc-algorithm/"/>
+    <id>http://code41.me/2016/04/27/jvm-gc-algorithm/</id>
     <published>2016-04-27T07:12:34.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -741,23 +766,23 @@
     
     </summary>
     
-      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+      <category term="java" scheme="http://code41.me/categories/java/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="JVM" scheme="http://blog.code41.me/tags/JVM/"/>
+      <category term="JVM" scheme="http://code41.me/tags/JVM/"/>
     
   </entry>
   
   <entry>
     <title>mongodb授权配置及可视化客户端访问问题</title>
-    <link href="http://blog.code41.me/2015/12/09/mongodb-authorization/"/>
-    <id>http://blog.code41.me/2015/12/09/mongodb-authorization/</id>
+    <link href="http://code41.me/2015/12/09/mongodb-authorization/"/>
+    <id>http://code41.me/2015/12/09/mongodb-authorization/</id>
     <published>2015-12-09T05:59:35.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -855,25 +880,25 @@
     
     </summary>
     
-      <category term="数据库" scheme="http://blog.code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="数据库" scheme="http://code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
-      <category term="mongodb" scheme="http://blog.code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/mongodb/"/>
+      <category term="mongodb" scheme="http://code41.me/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/mongodb/"/>
     
     
-      <category term="mongodb" scheme="http://blog.code41.me/tags/mongodb/"/>
+      <category term="mongodb" scheme="http://code41.me/tags/mongodb/"/>
     
-      <category term="robomongo" scheme="http://blog.code41.me/tags/robomongo/"/>
+      <category term="robomongo" scheme="http://code41.me/tags/robomongo/"/>
     
-      <category term="数据库" scheme="http://blog.code41.me/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+      <category term="数据库" scheme="http://code41.me/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
     
   </entry>
   
   <entry>
     <title>Node普通应用的基本Nginx配置</title>
-    <link href="http://blog.code41.me/2015/09/24/basic-nginx-configuration-for-node-webapp/"/>
-    <id>http://blog.code41.me/2015/09/24/basic-nginx-configuration-for-node-webapp/</id>
+    <link href="http://code41.me/2015/09/24/basic-nginx-configuration-for-node-webapp/"/>
+    <id>http://code41.me/2015/09/24/basic-nginx-configuration-for-node-webapp/</id>
     <published>2015-09-24T14:41:11.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -902,23 +927,23 @@
     
     </summary>
     
-      <category term="基础" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="nginx" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80/nginx/"/>
+      <category term="nginx" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80/nginx/"/>
     
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="nginx" scheme="http://blog.code41.me/tags/nginx/"/>
+      <category term="nginx" scheme="http://code41.me/tags/nginx/"/>
     
-      <category term="反向代理" scheme="http://blog.code41.me/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
+      <category term="反向代理" scheme="http://code41.me/tags/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86/"/>
     
   </entry>
   
   <entry>
     <title>在Linode服务器上搭建Shadowsocks</title>
-    <link href="http://blog.code41.me/2015/09/22/deploy-shadowsocks-on-linode-server/"/>
-    <id>http://blog.code41.me/2015/09/22/deploy-shadowsocks-on-linode-server/</id>
+    <link href="http://code41.me/2015/09/22/deploy-shadowsocks-on-linode-server/"/>
+    <id>http://code41.me/2015/09/22/deploy-shadowsocks-on-linode-server/</id>
     <published>2015-09-22T13:15:09.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -956,21 +981,21 @@
     
     </summary>
     
-      <category term="工具" scheme="http://blog.code41.me/categories/%E5%B7%A5%E5%85%B7/"/>
+      <category term="工具" scheme="http://code41.me/categories/%E5%B7%A5%E5%85%B7/"/>
     
     
-      <category term="梯子" scheme="http://blog.code41.me/tags/%E6%A2%AF%E5%AD%90/"/>
+      <category term="梯子" scheme="http://code41.me/tags/%E6%A2%AF%E5%AD%90/"/>
     
-      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
     
-      <category term="shadowsocks" scheme="http://blog.code41.me/tags/shadowsocks/"/>
+      <category term="shadowsocks" scheme="http://code41.me/tags/shadowsocks/"/>
     
   </entry>
   
   <entry>
     <title>在shell中使用Sublime Text</title>
-    <link href="http://blog.code41.me/2015/09/17/use-sublime-text-in-shell/"/>
-    <id>http://blog.code41.me/2015/09/17/use-sublime-text-in-shell/</id>
+    <link href="http://code41.me/2015/09/17/use-sublime-text-in-shell/"/>
+    <id>http://code41.me/2015/09/17/use-sublime-text-in-shell/</id>
     <published>2015-09-17T06:45:03.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1013,25 +1038,25 @@
     
     </summary>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
-      <category term="编辑器" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+      <category term="编辑器" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
     
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
     
-      <category term="Sublime" scheme="http://blog.code41.me/tags/Sublime/"/>
+      <category term="Sublime" scheme="http://code41.me/tags/Sublime/"/>
     
-      <category term="编辑器" scheme="http://blog.code41.me/tags/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
+      <category term="编辑器" scheme="http://code41.me/tags/%E7%BC%96%E8%BE%91%E5%99%A8/"/>
     
   </entry>
   
   <entry>
     <title>GIT进阶知识和命令</title>
-    <link href="http://blog.code41.me/2015/07/09/git-commands-advanced/"/>
-    <id>http://blog.code41.me/2015/07/09/git-commands-advanced/</id>
+    <link href="http://code41.me/2015/07/09/git-commands-advanced/"/>
+    <id>http://code41.me/2015/07/09/git-commands-advanced/</id>
     <published>2015-07-08T16:21:50.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1087,23 +1112,23 @@
     
     </summary>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
     
-      <category term="git" scheme="http://blog.code41.me/tags/git/"/>
+      <category term="git" scheme="http://code41.me/tags/git/"/>
     
-      <category term="进阶" scheme="http://blog.code41.me/tags/%E8%BF%9B%E9%98%B6/"/>
+      <category term="进阶" scheme="http://code41.me/tags/%E8%BF%9B%E9%98%B6/"/>
     
   </entry>
   
   <entry>
     <title>GIT基础知识和命令</title>
-    <link href="http://blog.code41.me/2015/06/25/git-commods/"/>
-    <id>http://blog.code41.me/2015/06/25/git-commods/</id>
+    <link href="http://code41.me/2015/06/25/git-commods/"/>
+    <id>http://code41.me/2015/06/25/git-commods/</id>
     <published>2015-06-25T14:40:36.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1204,21 +1229,21 @@
     
     </summary>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
     
-      <category term="git" scheme="http://blog.code41.me/tags/git/"/>
+      <category term="git" scheme="http://code41.me/tags/git/"/>
     
   </entry>
   
   <entry>
     <title>Java中基本数据类型和对象数据类型</title>
-    <link href="http://blog.code41.me/2015/06/23/java-the-difference-of-long-Long/"/>
-    <id>http://blog.code41.me/2015/06/23/java-the-difference-of-long-Long/</id>
+    <link href="http://code41.me/2015/06/23/java-the-difference-of-long-Long/"/>
+    <id>http://code41.me/2015/06/23/java-the-difference-of-long-Long/</id>
     <published>2015-06-23T14:33:55.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1246,25 +1271,25 @@
     
     </summary>
     
-      <category term="java" scheme="http://blog.code41.me/categories/java/"/>
+      <category term="java" scheme="http://code41.me/categories/java/"/>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/java/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="java" scheme="http://blog.code41.me/tags/java/"/>
+      <category term="java" scheme="http://code41.me/tags/java/"/>
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="基本数据类型" scheme="http://blog.code41.me/tags/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+      <category term="基本数据类型" scheme="http://code41.me/tags/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
     
-      <category term="对象数据类型" scheme="http://blog.code41.me/tags/%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
+      <category term="对象数据类型" scheme="http://code41.me/tags/%E5%AF%B9%E8%B1%A1%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
     
   </entry>
   
   <entry>
     <title>使用XCode7在ios设备上真机调试</title>
-    <link href="http://blog.code41.me/2015/06/19/Run-ios-code-on-XCode-7/"/>
-    <id>http://blog.code41.me/2015/06/19/Run-ios-code-on-XCode-7/</id>
+    <link href="http://code41.me/2015/06/19/Run-ios-code-on-XCode-7/"/>
+    <id>http://code41.me/2015/06/19/Run-ios-code-on-XCode-7/</id>
     <published>2015-06-19T15:20:41.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1285,19 +1310,19 @@
     
     </summary>
     
-      <category term="ios" scheme="http://blog.code41.me/categories/ios/"/>
+      <category term="ios" scheme="http://code41.me/categories/ios/"/>
     
     
-      <category term="ios" scheme="http://blog.code41.me/tags/ios/"/>
+      <category term="ios" scheme="http://code41.me/tags/ios/"/>
     
-      <category term="xcode7" scheme="http://blog.code41.me/tags/xcode7/"/>
+      <category term="xcode7" scheme="http://code41.me/tags/xcode7/"/>
     
   </entry>
   
   <entry>
     <title>Markdown常用语法</title>
-    <link href="http://blog.code41.me/2015/03/24/markdown/"/>
-    <id>http://blog.code41.me/2015/03/24/markdown/</id>
+    <link href="http://code41.me/2015/03/24/markdown/"/>
+    <id>http://code41.me/2015/03/24/markdown/</id>
     <published>2015-03-23T23:46:18.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1333,7 +1358,7 @@
 <ul>
 <li>bullet list 5</li>
 </ul>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p>This is an <a href="http://blog.code41.me/">example inline link</a> and <a href="http://blog.code41.me/" title="code41&#39;s blog">another one with a title</a>.</p>
+<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p>This is an <a href="http://blog.code41.me/" target="_blank" rel="external">example inline link</a> and <a href="http://blog.code41.me/" title="code41&#39;s blog" target="_blank" rel="external">another one with a title</a>.</p>
 <h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>A sample image :</p>
 <p><img src="http://www.revolunet.com/static/parisjs8/img/logo-revolunet-carre.jpg" alt="revolunet logo" title="revolunet logo"></p>
 <h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>使用 <strong>_```</strong>  对代码类型进行声明</p>
@@ -1375,21 +1400,21 @@
     
     </summary>
     
-      <category term="基础知识" scheme="http://blog.code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
     
     
-      <category term="基础" scheme="http://blog.code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
     
-      <category term="工具" scheme="http://blog.code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
     
-      <category term="markdown" scheme="http://blog.code41.me/tags/markdown/"/>
+      <category term="markdown" scheme="http://code41.me/tags/markdown/"/>
     
   </entry>
   
   <entry>
     <title>Let&#39;s Begin</title>
-    <link href="http://blog.code41.me/2015/03/22/Let-s-Begin/"/>
-    <id>http://blog.code41.me/2015/03/22/Let-s-Begin/</id>
+    <link href="http://code41.me/2015/03/22/Let-s-Begin/"/>
+    <id>http://code41.me/2015/03/22/Let-s-Begin/</id>
     <published>2015-03-22T15:50:50.000Z</published>
     <updated>2017-02-09T01:53:44.000Z</updated>
     
@@ -1402,7 +1427,7 @@
     </summary>
     
     
-      <category term="first" scheme="http://blog.code41.me/tags/first/"/>
+      <category term="first" scheme="http://code41.me/tags/first/"/>
     
   </entry>
   
