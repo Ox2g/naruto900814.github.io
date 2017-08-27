@@ -171,6 +171,236 @@
           
           
             
+              <a class="post-title-link" href="/2015/12/09/mongodb-authorization/" itemprop="url">
+                mongodb授权配置及可视化客户端访问问题
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-12-09T13:59:35+08:00" content="2015-12-09">
+            2015-12-09
+          </time>
+        </span>
+
+        
+          <span class="post-category" >
+            &nbsp; | &nbsp; 分类于
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/数据库/" itemprop="url" rel="index">
+                  <span itemprop="name">数据库</span>
+                </a>
+              </span>
+
+              
+              
+                ， 
+              
+
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/数据库/基础知识/" itemprop="url" rel="index">
+                  <span itemprop="name">基础知识</span>
+                </a>
+              </span>
+
+              
+              
+                ， 
+              
+
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/数据库/基础知识/mongodb/" itemprop="url" rel="index">
+                  <span itemprop="name">mongodb</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="mongodb的授权配置"><a href="#mongodb的授权配置" class="headerlink" title="mongodb的授权配置"></a>mongodb的授权配置</h2><p>在使用express开发自己的小项目一段时间后，发现mongodb的配置一致是本地无密码的接入方式，这样的方式在开发中一定是无所谓了，但是在实际的生产和服务器配置上是不会被允许的，所以研究今天研究了一下mongodb的授权配置和数据库用户添加等配置问题。</p>
+<ol>
+<li><p>mongodb的本地配置</p>
+<ul>
+<li>version: v3.0.6</li>
+<li>OS: windows 7</li>
+<li>start-script:<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">D:\bin\MongoDB\Server\3.0\bin\mongod.exe --dbpath D:\bin\MongoDB\mongoData</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>连接命令行客户端</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mongo -port 27017</div></pre></td></tr></table></figure>
+</li>
+<li><p>添加用户</p>
+<ul>
+<li><p>添加用户管理员用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">use admin;</div><div class="line"><span class="comment">## 创建root用户，设置全数据用户管理权限</span></div><div class="line">db.createUser(</div><div class="line">  &#123;</div><div class="line">    user:<span class="string">"root"</span>,</div><div class="line">    <span class="built_in">pwd</span>:<span class="string">"root"</span>,</div><div class="line">    roles:[&#123;role:<span class="string">"userAdminAnyDatabase"</span>,db:<span class="string">"admin"</span>&#125;]</div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+<li><p>添加各分库用户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">use <span class="built_in">test</span>;</div><div class="line"></div><div class="line">db.createUser(</div><div class="line">  &#123;</div><div class="line">    user:<span class="string">"test"</span>,</div><div class="line">    <span class="built_in">pwd</span>:<span class="string">"test"</span>,</div><div class="line">    roles:[&#123;role:<span class="string">"readWrite"</span>,db:<span class="string">"test"</span>&#125;]</div><div class="line">  &#125;</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>修改原有role权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## 给root用户超级管理员权限, 这样才能被robomongo使用</span></div><div class="line">db.grantRolesToUser(</div><div class="line"><span class="string">"root"</span>,</div><div class="line">[</div><div class="line">  &#123;</div><div class="line">    role:<span class="string">"__system"</span>,</div><div class="line">    db:<span class="string">"admin"</span></div><div class="line">  &#125;</div><div class="line">]</div><div class="line">)</div></pre></td></tr></table></figure>
+</li>
+<li><p>修改启动脚本和项目配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">D:\bin\MongoDB\Server\3.0\bin\mongod.exe --dbpath D:\bin\MongoDB\mongoData --auth</div></pre></td></tr></table></figure>
+</li>
+</ol>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/12/09/mongodb-authorization/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/09/24/basic-nginx-configuration-for-node-webapp/" itemprop="url">
+                Node普通应用的基本Nginx配置
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2015-09-24T22:41:11+08:00" content="2015-09-24">
+            2015-09-24
+          </time>
+        </span>
+
+        
+          <span class="post-category" >
+            &nbsp; | &nbsp; 分类于
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/基础/" itemprop="url" rel="index">
+                  <span itemprop="name">基础</span>
+                </a>
+              </span>
+
+              
+              
+                ， 
+              
+
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/基础/nginx/" itemprop="url" rel="index">
+                  <span itemprop="name">nginx</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <h2 id="Node普通应用的基本Nginx配置"><a href="#Node普通应用的基本Nginx配置" class="headerlink" title="Node普通应用的基本Nginx配置"></a>Node普通应用的基本Nginx配置</h2><blockquote>
+<p>前几日由于网慢，自己购买了一个小的docker容器，这两天就打算鼓捣个小的应用放到上面，同时配置上自己之前的域名，但是在端口的出现毕竟不好看，之前一直知道Nginx的用途，故配置了一个小的Nginx的反向代理来实践一下。</p>
+</blockquote>
+<h4 id="Centos-安装Nginx"><a href="#Centos-安装Nginx" class="headerlink" title="Centos 安装Nginx"></a>Centos 安装Nginx</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"># 安装nginx需要的一些第三方包，来支持相关模块的使用</div><div class="line">yum -y install gcc gcc-c++ autoconf automake make</div><div class="line">yum -y install zlib zlib-devel openssl openssl--devel pcre pcre-devel </div><div class="line"></div><div class="line"># 安装nginx</div><div class="line">yum install nginx</div></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/09/24/basic-nginx-configuration-for-node-webapp/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/09/22/deploy-shadowsocks-on-linode-server/" itemprop="url">
                 在Linode服务器上搭建Shadowsocks
               </a>
@@ -889,21 +1119,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-count">20</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             
-              <span class="site-state-item-count">14</span>
+              <span class="site-state-item-count">15</span>
               <span class="site-state-item-name">分类</span>
               
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">34</span>
+              <span class="site-state-item-count">36</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
