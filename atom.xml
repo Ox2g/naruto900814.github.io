@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://code41.me/"/>
-  <updated>2017-08-27T15:22:13.000Z</updated>
+  <updated>2017-09-03T05:28:08.000Z</updated>
   <id>http://code41.me/</id>
   
   <author>
@@ -14,6 +14,60 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>GIT的Rebase和Merge的区别</title>
+    <link href="http://code41.me/2017/09/03/git-rebase-vs-merge/"/>
+    <id>http://code41.me/2017/09/03/git-rebase-vs-merge/</id>
+    <published>2017-09-03T04:36:18.000Z</published>
+    <updated>2017-09-03T05:28:08.000Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="GIT的Rebase和Merge的区别"><a href="#GIT的Rebase和Merge的区别" class="headerlink" title="GIT的Rebase和Merge的区别"></a>GIT的Rebase和Merge的区别</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><p>区分GIT中Rebase和Merge的区别</p>
+<h3 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h3><ol>
+<li>模拟当前本地分支和远程分支的提交点情况<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1504415696066.png" alt=""></li>
+</ul>
+</li>
+<li>Merge是对分支的合并操作，按照提交的顺序排列全部Commits<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1504415729898.png" alt=""></li>
+<li>创建一个新的Commit，按照提交时间顺序规整全部Commit提交点</li>
+</ul>
+</li>
+<li>Rebase也是对分支的合并操作，但是远程Commit的全部提交点会排列在本地的为提交点顺序之前<ul>
+<li><img src="http://om6u6x9f9.bkt.clouddn.com/markdown/1504415756949.png" alt=""></li>
+<li>保持远程的提交顺序，重新复制创建出本地的全部提交点备份，并排列备份提交到远程顺序之后</li>
+<li>优点<ul>
+<li>保证全部GIT的提交链的顺序准确性</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="Rebase本地冲突处理方式"><a href="#Rebase本地冲突处理方式" class="headerlink" title="Rebase本地冲突处理方式"></a>Rebase本地冲突处理方式</h3><ol>
+<li>出现冲突后，处理冲突</li>
+<li>处理冲突时，如果修改好冲突文件后，使用<strong>git add -u</strong>进行冲突文件的提交操作</li>
+<li>之后使用<strong>git rebase –continue</strong> 继续Rebase操作</li>
+<li>在使用<strong>git rebase –continue</strong>时，提示<strong>applying no changes</strong>时，确认冲突处理完全后，使用<strong>git Rebase–skip</strong>继续执行</li>
+<li>出现冲突后，打算恢复成Rebase操作前的样子，使用<strong>git rebase –abort</strong>恢复</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;GIT的Rebase和Merge的区别&quot;&gt;&lt;a href=&quot;#GIT的Rebase和Merge的区别&quot; class=&quot;headerlink&quot; title=&quot;GIT的Rebase和Merge的区别&quot;&gt;&lt;/a&gt;GIT的Rebase和Merge的区别&lt;/h2&gt;&lt;h3 i
+    
+    </summary>
+    
+      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="git" scheme="http://code41.me/tags/git/"/>
+    
+  </entry>
   
   <entry>
     <title>孩子你慢慢来</title>
@@ -1602,26 +1656,6 @@
       <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
     
       <category term="markdown" scheme="http://code41.me/tags/markdown/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Let&#39;s Begin</title>
-    <link href="http://code41.me/2015/03/22/Let-s-Begin/"/>
-    <id>http://code41.me/2015/03/22/Let-s-Begin/</id>
-    <published>2015-03-22T15:50:50.000Z</published>
-    <updated>2017-02-09T01:53:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="有一些东西需要一些开始，那么就从现在开始吧"><a href="#有一些东西需要一些开始，那么就从现在开始吧" class="headerlink" title="有一些东西需要一些开始，那么就从现在开始吧~"></a>有一些东西需要一些开始，那么就从现在开始吧~</h2><h3 id="快两年了，还是那句话。Fighting！！"><a href="#快两年了，还是那句话。Fighting！！" class="headerlink" title="快两年了，还是那句话。Fighting！！"></a>快两年了，还是那句话。Fighting！！</h3>]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;有一些东西需要一些开始，那么就从现在开始吧&quot;&gt;&lt;a href=&quot;#有一些东西需要一些开始，那么就从现在开始吧&quot; class=&quot;headerlink&quot; title=&quot;有一些东西需要一些开始，那么就从现在开始吧~&quot;&gt;&lt;/a&gt;有一些东西需要一些开始，那么就从现在开始吧~
-    
-    </summary>
-    
-    
-      <category term="first" scheme="http://code41.me/tags/first/"/>
     
   </entry>
   
