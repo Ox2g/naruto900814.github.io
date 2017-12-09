@@ -171,6 +171,115 @@
           
           
             
+              <a class="post-title-link" href="/2017/12/09/multiple-users-for-git-config/" itemprop="url">
+                Git的多用户配置
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          发表于
+          <time itemprop="dateCreated" datetime="2017-12-09T19:52:18+08:00" content="2017-12-09">
+            2017-12-09
+          </time>
+        </span>
+
+        
+          <span class="post-category" >
+            &nbsp; | &nbsp; 分类于
+            
+              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                <a href="/categories/基础知识/" itemprop="url" rel="index">
+                  <span itemprop="name">基础知识</span>
+                </a>
+              </span>
+
+              
+              
+
+            
+          </span>
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="Git的多用户配置"><a href="#Git的多用户配置" class="headerlink" title="Git的多用户配置"></a>Git的多用户配置</h2><ol>
+<li><p>生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成私钥和公钥的时候考虑使用不同的文件名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;XXX@mail.com&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>加载SSH-KEY</p>
+<ul>
+<li><p>执行ssh-add命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件</div></pre></td></tr></table></figure>
+</li>
+<li><p>可能提示失败，如“could not open a connection to your authentication agent”</p>
+</li>
+<li>出现上述情况为当前账户SSH添加权限问题，使用如下命令解决<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">eval `ssh-agent`</div><div class="line">ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>配置多仓库多用户配置</p>
+<ul>
+<li>在当前用户的目录的”.ssh”文件夹下添加config文件，文件地址如[~/.ssh/config]</li>
+<li><p>在config文件中添加多仓库站点的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Host github.com</div><div class="line">  HostName github.com ##站点地址</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_github ##私钥文件地址</div><div class="line">  User XXX1 ##用户名</div><div class="line">Host github.com</div><div class="line">  HostName github.com ##站点地址</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_github2 ##私钥文件地址</div><div class="line">  User XXX2 ##用户名</div><div class="line">Host git.coding.net</div><div class="line">  HostName git.coding.net ##站点地址</div><div class="line">  User xxx@mail.com ##用户名</div><div class="line">  PreferredAuthentications publickey ##配置登录时用什么权限认证--可设为publickey,password publickey,keyboard-interactive等</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_coding ##私钥文件地址</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置解读</p>
+<ul>
+<li>当前配置支持相同站点不同用户，根据提交代码的用户名自动使用不同的用户权限进行提交</li>
+<li>需要在代码所在路径下，配置当前代码使用的用户名</li>
+<li>也可以添加多个站点的配置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>校验配置，使用“ssh -T”命令，出现成功则代表配置成功<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com ##校验github</div><div class="line">ssh -T git@git.coding.com ##校验coding.net</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2017/09/03/git-rebase-vs-merge/" itemprop="url">
                 GIT的Rebase和Merge的区别
               </a>
@@ -1464,178 +1573,6 @@
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2016/05/18/basic-knowledge-for-collection-and-map/" itemprop="url">
-                常见的集合类概念和问题总结
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          发表于
-          <time itemprop="dateCreated" datetime="2016-05-18T21:27:32+08:00" content="2016-05-18">
-            2016-05-18
-          </time>
-        </span>
-
-        
-          <span class="post-category" >
-            &nbsp; | &nbsp; 分类于
-            
-              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/java/" itemprop="url" rel="index">
-                  <span itemprop="name">java</span>
-                </a>
-              </span>
-
-              
-              
-                ， 
-              
-
-            
-              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/java/基础知识/" itemprop="url" rel="index">
-                  <span itemprop="name">基础知识</span>
-                </a>
-              </span>
-
-              
-              
-
-            
-          </span>
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h3 id="ArrayList的实现原理"><a href="#ArrayList的实现原理" class="headerlink" title="ArrayList的实现原理"></a>ArrayList的实现原理</h3><ol>
-<li>ArrayList是基于数组的方式实现，无容量的限制；</li>
-<li>ArrayList在插入元素时可能会扩容，删除元素并不会减少数组容量，大部分都是使用System.arraycopy进行深拷贝出新的对象数组；</li>
-<li>由于ArrayList是基于数组的方式实现，所以查询是O(1)复杂度；</li>
-<li>线程不安全。</li>
-</ol>
-<h3 id="Vector的实现原理"><a href="#Vector的实现原理" class="headerlink" title="Vector的实现原理"></a>Vector的实现原理</h3><ol>
-<li>Vector和ArrayList的实现方式一样，只是关键方法都添加Synchronize的关键字来保证线程安全；</li>
-<li>容量扩展上和ArrayList不同，可以再初始化创建Vector时，传入增长值来控制每次扩展大小；</li>
-<li>线程安全的，由于锁的机制，操作耗费性能较大。</li>
-</ol>
-<h3 id="LinkedList的实现原理"><a href="#LinkedList的实现原理" class="headerlink" title="LinkedList的实现原理"></a>LinkedList的实现原理</h3><ol>
-<li>LinkedList是基于双向链表实现的；</li>
-<li>创建对象后，默认插入首位，只需要更改位置的前后指针就可以完成插入操作；</li>
-<li>查找元素时，遍历整个链表；</li>
-<li>删除元素时，遍历链表查找到元素后，更改前后元素指针，删除链表上的元素；</li>
-<li>线程不安全。</li>
-</ol>
-<h3 id="Stack的实现原理"><a href="#Stack的实现原理" class="headerlink" title="Stack的实现原理"></a>Stack的实现原理</h3><ol>
-<li>继承于Vector类，额外实现了pop()、push()、peek()的方法；</li>
-<li>支持后进先出(LIFO)；</li>
-<li>线程安全的。</li>
-</ol>
-<h3 id="ArrayList的大小是如何自动增加的"><a href="#ArrayList的大小是如何自动增加的" class="headerlink" title="ArrayList的大小是如何自动增加的"></a>ArrayList的大小是如何自动增加的</h3><ol>
-<li>ArrayList在进行add操作时会对大小进行判断，如果不够大，会增长50%；</li>
-<li>如果容量不足时，ArrayList执行add方法的过程时，新建一个长度更长的数组，使用System.arraycopy()方法将旧数组拷贝到新数组。<blockquote>
-<p>System.arraycopy()方法为浅拷贝，只是指针的引用。</p>
-</blockquote>
-</li>
-</ol>
-<h3 id="ArrayList初始化创建赋值方式"><a href="#ArrayList初始化创建赋值方式" class="headerlink" title="ArrayList初始化创建赋值方式"></a>ArrayList初始化创建赋值方式</h3><ol>
-<li>无参创建：创建一个空数组填充的ArrayList，长度为0；</li>
-<li>根据size大小创建：根据传入数字，创建大小一样的数组；</li>
-<li>根据Collection对象创建：根据传入Collection对象的toArray()返回结果判断size，并将Collection的toArray()返回值，使用Arrays.copyOf方法赋值；</li>
-<li>初始创建的空ArrayList对象会在第一次add方法调用的时候，使用默认大小10进行数组创建。</li>
-</ol>
-<h3 id="如何复制某个ArrayList到另一个ArrayList"><a href="#如何复制某个ArrayList到另一个ArrayList" class="headerlink" title="如何复制某个ArrayList到另一个ArrayList"></a>如何复制某个ArrayList到另一个ArrayList</h3><ol>
-<li>使用clone方法：ArrayList newArray = oldArray.clone();</li>
-<li>使用ArrayList构造方法：ArrayList myObject = new ArrayList(myTempObject);</li>
-<li>使用Collection的copy方法<blockquote>
-<p>第3种为深拷贝，其他为浅拷贝</p>
-</blockquote>
-</li>
-</ol>
-<h3 id="评估ArrayList的增加或者删除效率低的原因，如何改善？"><a href="#评估ArrayList的增加或者删除效率低的原因，如何改善？" class="headerlink" title="评估ArrayList的增加或者删除效率低的原因，如何改善？"></a>评估ArrayList的增加或者删除效率低的原因，如何改善？</h3><p>删除和添加都是依赖于System.arraycopy()方法，所以效率比较低。<br><br>改善：使用LinkedList进行频繁的添加和删除操作。</p>
-<h3 id="ArrayList和LinkedList的区别"><a href="#ArrayList和LinkedList的区别" class="headerlink" title="ArrayList和LinkedList的区别"></a>ArrayList和LinkedList的区别</h3><ol>
-<li>两者都是线程不安全的。</li>
-<li>ArrayList是基于对象数组实现，插入和删除操作性能消耗较大；而LinkedList是基于链表方式实现的，插入和删除性能消耗小，只需要操作指针就可以。</li>
-<li>ArrayList查询时时间复杂度O(1)，故ArrayList查询性能好；而LinkedList需要遍历，故查询性能LinkedList较差。</li>
-</ol>
-<h3 id="ArrayList和Vector的区别"><a href="#ArrayList和Vector的区别" class="headerlink" title="ArrayList和Vector的区别"></a>ArrayList和Vector的区别</h3><ol>
-<li>两者都实现了List接口，都是通过对象数组进行数据存储。</li>
-<li>Vector的方法是使用synchronized关键字进行了同步锁定，是线程安全的；而ArrayList是线程不安全的。</li>
-<li>ArrayList在容量不足的情况下，会新增50%的空间；而Vector会新增100%的空间；但是两者在插入新对象时都是使用Arrays.copyOf()方法，将老对象拷贝到扩充后的对象数组中的。</li>
-</ol>
-<h3 id="ListIterator和Iterator的区别"><a href="#ListIterator和Iterator的区别" class="headerlink" title="ListIterator和Iterator的区别"></a>ListIterator和Iterator的区别</h3><ol>
-<li>都有hasNext和next方法，都可以进行向后的遍历。</li>
-<li>都含有remove方法，都可以对元素进行删除。</li>
-<li>ListIterator含有hasPrevious和previous方法，可以进行向前遍历。</li>
-<li>ListIterator含有add和set方法，除了删除还可以完成元素的添加和修改操作。</li>
-<li>ListIterator可以通过nextIndex和previousIndex获取元素的索引位置。</li>
-</ol>
-<h3 id="ConcurrentHashMap的实现原理"><a href="#ConcurrentHashMap的实现原理" class="headerlink" title="ConcurrentHashMap的实现原理"></a>ConcurrentHashMap的实现原理</h3><ol>
-<li>实现原理和HashMap类似，但是引入了segment，故每次put操作只锁某一个segment，而对其他segment无影响。</li>
-<li>hash的实现是final类型，故每个value的key都不会重复。</li>
-<li>get操作的变量是volatile的变量，保证了获取之前都是写操作完成的，故保证了数据的实时性。</li>
-</ol>
-<h3 id="HashMap的实现原理"><a href="#HashMap的实现原理" class="headerlink" title="HashMap的实现原理"></a>HashMap的实现原理</h3><ol>
-<li>采用数组方式存储key和value构成的Entry对象，无容量限制；</li>
-<li>基于key的hash寻找在Entry数组中的位置，对于hash冲突采用链表方式处理；</li>
-<li>HashMap进行元素添加的时候，先查找是否已存在，如果已存在就覆盖旧的value，并返回就得value，如果不存在，添加新的Entry对象；</li>
-<li>HashMap在添加元素时，如果空间不够，自动扩展空间，扩展操作会创建新的Entry数组，并将老的Entry数组拷贝到新的数组中；</li>
-<li>线程不安全。</li>
-</ol>
-<h3 id="TreeMap的实现原理"><a href="#TreeMap的实现原理" class="headerlink" title="TreeMap的实现原理"></a>TreeMap的实现原理</h3><ol>
-<li>TreeMap是基于红黑树实现的，无容量限制；</li>
-<li>TreeMap是线程不安全的。</li>
-</ol>
-<h3 id="HashSet和TreeSet的实现原理"><a href="#HashSet和TreeSet的实现原理" class="headerlink" title="HashSet和TreeSet的实现原理"></a>HashSet和TreeSet的实现原理</h3><ol>
-<li>HashSet是基于HashMap实现的；</li>
-<li>TreeSet是基于TreeMap实现的；</li>
-<li>线程不安全</li>
-</ol>
-<p>Java集合类的关系图谱如下所示：<br><img src="/2016/05/18/basic-knowledge-for-collection-and-map/relation-map-for-collection-and-map.png" alt="Java集合类关系图谱"></p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1676,7 +1613,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1690,7 +1627,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">36</span>
+              <span class="site-state-item-count">37</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

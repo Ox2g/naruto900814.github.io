@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://code41.me/"/>
-  <updated>2017-09-03T05:28:08.000Z</updated>
+  <updated>2017-12-09T13:14:15.040Z</updated>
   <id>http://code41.me/</id>
   
   <author>
@@ -16,11 +16,73 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Git的多用户配置</title>
+    <link href="http://code41.me/2017/12/09/multiple-users-for-git-config/"/>
+    <id>http://code41.me/2017/12/09/multiple-users-for-git-config/</id>
+    <published>2017-12-09T11:52:18.000Z</published>
+    <updated>2017-12-09T13:14:15.040Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Git的多用户配置"><a href="#Git的多用户配置" class="headerlink" title="Git的多用户配置"></a>Git的多用户配置</h2><ol>
+<li><p>生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成私钥和公钥的时候考虑使用不同的文件名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;XXX@mail.com&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>加载SSH-KEY</p>
+<ul>
+<li><p>执行ssh-add命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件</div></pre></td></tr></table></figure>
+</li>
+<li><p>可能提示失败，如“could not open a connection to your authentication agent”</p>
+</li>
+<li>出现上述情况为当前账户SSH添加权限问题，使用如下命令解决<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">eval `ssh-agent`</div><div class="line">ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>配置多仓库多用户配置</p>
+<ul>
+<li>在当前用户的目录的”.ssh”文件夹下添加config文件，文件地址如[~/.ssh/config]</li>
+<li><p>在config文件中添加多仓库站点的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Host github.com</div><div class="line">  HostName github.com ##站点地址</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_github ##私钥文件地址</div><div class="line">  User XXX1 ##用户名</div><div class="line">Host github.com</div><div class="line">  HostName github.com ##站点地址</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_github2 ##私钥文件地址</div><div class="line">  User XXX2 ##用户名</div><div class="line">Host git.coding.net</div><div class="line">  HostName git.coding.net ##站点地址</div><div class="line">  User xxx@mail.com ##用户名</div><div class="line">  PreferredAuthentications publickey ##配置登录时用什么权限认证--可设为publickey,password publickey,keyboard-interactive等</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_coding ##私钥文件地址</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置解读</p>
+<ul>
+<li>当前配置支持相同站点不同用户，根据提交代码的用户名自动使用不同的用户权限进行提交</li>
+<li>需要在代码所在路径下，配置当前代码使用的用户名</li>
+<li>也可以添加多个站点的配置</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>校验配置，使用“ssh -T”命令，出现成功则代表配置成功<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com ##校验github</div><div class="line">ssh -T git@git.coding.com ##校验coding.net</div></pre></td></tr></table></figure>
+</li>
+</ol>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;Git的多用户配置&quot;&gt;&lt;a href=&quot;#Git的多用户配置&quot; class=&quot;headerlink&quot; title=&quot;Git的多用户配置&quot;&gt;&lt;/a&gt;Git的多用户配置&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成
+    
+    </summary>
+    
+      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
+    
+    
+      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+      <category term="git" scheme="http://code41.me/tags/git/"/>
+    
+      <category term="多用户" scheme="http://code41.me/tags/%E5%A4%9A%E7%94%A8%E6%88%B7/"/>
+    
+  </entry>
+  
+  <entry>
     <title>GIT的Rebase和Merge的区别</title>
     <link href="http://code41.me/2017/09/03/git-rebase-vs-merge/"/>
     <id>http://code41.me/2017/09/03/git-rebase-vs-merge/</id>
     <published>2017-09-03T04:36:18.000Z</published>
-    <updated>2017-09-03T05:28:08.000Z</updated>
+    <updated>2017-09-03T06:22:23.000Z</updated>
     
     <content type="html"><![CDATA[<h2 id="GIT的Rebase和Merge的区别"><a href="#GIT的Rebase和Merge的区别" class="headerlink" title="GIT的Rebase和Merge的区别"></a>GIT的Rebase和Merge的区别</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><p>区分GIT中Rebase和Merge的区别</p>
 <h3 id="详解"><a href="#详解" class="headerlink" title="详解"></a>详解</h3><ol>
@@ -1564,98 +1626,6 @@
       <category term="ios" scheme="http://code41.me/tags/ios/"/>
     
       <category term="xcode7" scheme="http://code41.me/tags/xcode7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Markdown常用语法</title>
-    <link href="http://code41.me/2015/03/24/markdown/"/>
-    <id>http://code41.me/2015/03/24/markdown/</id>
-    <published>2015-03-23T23:46:18.000Z</published>
-    <updated>2017-02-09T01:53:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="文字基础"><a href="#文字基础" class="headerlink" title="文字基础"></a>文字基础</h2><p>*斜体* <em>斜体</em><br>_斜体_ <em>斜体</em><br>**加粗** <strong>加粗</strong><br>__加粗__ <strong>加粗</strong> </p>
-<p>this is <code>important</code> text. `important`</p>
-<a id="more"></a>
-<h2 id="缩进"><a href="#缩进" class="headerlink" title="缩进"></a>缩进</h2><blockquote>
-<p>缩进</p>
-<blockquote>
-<p>缩进缩进</p>
-<blockquote>
-<p>123</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><h1 id="Big-title-h1"><a href="#Big-title-h1" class="headerlink" title="Big title (h1)"></a>Big title (h1)</h1><h2 id="Middle-title-h2"><a href="#Middle-title-h2" class="headerlink" title="Middle title (h2)"></a>Middle title (h2)</h2><h3 id="Smaller-title-h3"><a href="#Smaller-title-h3" class="headerlink" title="Smaller title (h3)"></a>Smaller title (h3)</h3><h4 id="and-so-on-hX"><a href="#and-so-on-hX" class="headerlink" title="and so on (hX)"></a>and so on (hX)</h4><h5 id="and-so-on-hX-1"><a href="#and-so-on-hX-1" class="headerlink" title="and so on (hX)"></a>and so on (hX)</h5><h6 id="and-so-on-hX-2"><a href="#and-so-on-hX-2" class="headerlink" title="and so on (hX)"></a>and so on (hX)</h6><h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><ul>
-<li>bullets can be <code>-</code>, <code>+</code>, or <code>*</code></li>
-<li>bullet list 1</li>
-<li><p>bullet list 2</p>
-<ul>
-<li>sub item 1</li>
-<li><p>sub item 2</p>
-<p>  with indented text inside</p>
-</li>
-</ul>
-</li>
-<li><p>bullet list 3</p>
-</li>
-</ul>
-<ul>
-<li>bullet list 4</li>
-</ul>
-<ul>
-<li>bullet list 5</li>
-</ul>
-<h2 id="超链接"><a href="#超链接" class="headerlink" title="超链接"></a>超链接</h2><p>This is an <a href="http://blog.code41.me/" target="_blank" rel="external">example inline link</a> and <a href="http://blog.code41.me/" title="code41&#39;s blog" target="_blank" rel="external">another one with a title</a>.</p>
-<h2 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h2><p>A sample image :</p>
-<p><img src="http://www.revolunet.com/static/parisjs8/img/logo-revolunet-carre.jpg" alt="revolunet logo" title="revolunet logo"></p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>使用 <strong>_```</strong>  对代码类型进行声明</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> Class Test extends BaseTest implements BaseInterface &#123;</div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> String testStr = <span class="string">"Hello World"</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span> <span class="params">(String[] args)</span> </span>&#123;</div><div class="line">        System.out.println(testStr);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>Some Javascript code :</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> config = &#123;</div><div class="line">    <span class="attr">duration</span>: <span class="number">5</span>,</div><div class="line">    <span class="attr">comment</span>: <span class="string">'WTF'</span></div><div class="line">&#125;</div><div class="line"><span class="comment">// callbacks beauty un action</span></div><div class="line">async_call(<span class="string">'/path/to/api'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">json</span>) </span>&#123;</div><div class="line">    another_call(json, <span class="function"><span class="keyword">function</span>(<span class="params">result2</span>) </span>&#123;</div><div class="line">        another_another_call(result2, <span class="function"><span class="keyword">function</span>(<span class="params">result3</span>) </span>&#123;</div><div class="line">            another_another_another_call(result3, <span class="function"><span class="keyword">function</span>(<span class="params">result4</span>) </span>&#123;</div><div class="line">                alert(<span class="string">'And if all went well, i got my result :)'</span>);</div><div class="line">            &#125;);</div><div class="line">        &#125;);</div><div class="line">    &#125;);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
-<h2 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h2><h3 id="表格的用法"><a href="#表格的用法" class="headerlink" title="表格的用法"></a>表格的用法</h3><table>
-<thead>
-<tr>
-<th>Year</th>
-<th>Temperature (low)</th>
-<th>Temperature (high)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>1900</td>
-<td>-10</td>
-<td>25</td>
-</tr>
-<tr>
-<td>1910</td>
-<td>-15</td>
-<td>30</td>
-</tr>
-<tr>
-<td>1920</td>
-<td>-10</td>
-<td>32</td>
-</tr>
-</tbody>
-</table>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;h2 id=&quot;文字基础&quot;&gt;&lt;a href=&quot;#文字基础&quot; class=&quot;headerlink&quot; title=&quot;文字基础&quot;&gt;&lt;/a&gt;文字基础&lt;/h2&gt;&lt;p&gt;*斜体* &lt;em&gt;斜体&lt;/em&gt;&lt;br&gt;_斜体_ &lt;em&gt;斜体&lt;/em&gt;&lt;br&gt;**加粗** &lt;strong&gt;加粗&lt;/strong&gt;&lt;br&gt;__加粗__ &lt;strong&gt;加粗&lt;/strong&gt; &lt;/p&gt;
-&lt;p&gt;this is &lt;code&gt;important&lt;/code&gt; text. `important`&lt;/p&gt;
-    
-    </summary>
-    
-      <category term="基础知识" scheme="http://code41.me/categories/%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/"/>
-    
-    
-      <category term="基础" scheme="http://code41.me/tags/%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="工具" scheme="http://code41.me/tags/%E5%B7%A5%E5%85%B7/"/>
-    
-      <category term="markdown" scheme="http://code41.me/tags/markdown/"/>
     
   </entry>
   

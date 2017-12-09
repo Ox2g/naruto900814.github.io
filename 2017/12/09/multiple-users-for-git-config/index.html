@@ -31,7 +31,7 @@
 
 
 
-  <meta name="keywords" content="java,基础,并发包,ReentrantLock,多线程," />
+  <meta name="keywords" content="基础,工具,git,多用户," />
 
 
 
@@ -42,28 +42,43 @@
   <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
 
 
-<meta name="description" content="ReentrantLock的优点
-ReentrantLock可以创建多个，对同一线程中的不同条件进行lock操作，而synchronized只能锁一个对象或者方法块。
-ReentrantLock可以控制线程得到锁的顺序，达到公平锁；同时也可以像synchronized一样非公平分配。
-ReentrantLock可以查看锁的状态，是否被锁上。
-ReentrantLock可以查看当前有多少线程在查看锁">
+<meta name="description" content="Git的多用户配置
+生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成私钥和公钥的时候考虑使用不同的文件名。
+1ssh-keygen -t rsa -C &amp;quot;XXX@mail.com&amp;quot;
+
+加载SSH-KEY
+
+执行ssh-add命令
+1ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件
+
+可能提示失败，如“could">
 <meta property="og:type" content="article">
-<meta property="og:title" content="并发锁ReentrantLock的优缺点">
-<meta property="og:url" content="http://code41.me/2016/05/26/reentrantlock/index.html">
+<meta property="og:title" content="Git的多用户配置">
+<meta property="og:url" content="http://code41.me/2017/12/09/multiple-users-for-git-config/index.html">
 <meta property="og:site_name" content="code41's blog">
-<meta property="og:description" content="ReentrantLock的优点
-ReentrantLock可以创建多个，对同一线程中的不同条件进行lock操作，而synchronized只能锁一个对象或者方法块。
-ReentrantLock可以控制线程得到锁的顺序，达到公平锁；同时也可以像synchronized一样非公平分配。
-ReentrantLock可以查看锁的状态，是否被锁上。
-ReentrantLock可以查看当前有多少线程在查看锁">
-<meta property="og:updated_time" content="2017-02-09T01:53:44.000Z">
+<meta property="og:description" content="Git的多用户配置
+生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成私钥和公钥的时候考虑使用不同的文件名。
+1ssh-keygen -t rsa -C &amp;quot;XXX@mail.com&amp;quot;
+
+加载SSH-KEY
+
+执行ssh-add命令
+1ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件
+
+可能提示失败，如“could">
+<meta property="og:updated_time" content="2017-12-09T13:14:15.040Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="并发锁ReentrantLock的优缺点">
-<meta name="twitter:description" content="ReentrantLock的优点
-ReentrantLock可以创建多个，对同一线程中的不同条件进行lock操作，而synchronized只能锁一个对象或者方法块。
-ReentrantLock可以控制线程得到锁的顺序，达到公平锁；同时也可以像synchronized一样非公平分配。
-ReentrantLock可以查看锁的状态，是否被锁上。
-ReentrantLock可以查看当前有多少线程在查看锁">
+<meta name="twitter:title" content="Git的多用户配置">
+<meta name="twitter:description" content="Git的多用户配置
+生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成私钥和公钥的时候考虑使用不同的文件名。
+1ssh-keygen -t rsa -C &amp;quot;XXX@mail.com&amp;quot;
+
+加载SSH-KEY
+
+执行ssh-add命令
+1ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件
+
+可能提示失败，如“could">
 
 
 <script type="text/javascript" id="hexo.configuration">
@@ -73,7 +88,7 @@ ReentrantLock可以查看当前有多少线程在查看锁">
   };
 </script>
 
-  <title> 并发锁ReentrantLock的优缺点 | code41's blog </title>
+  <title> Git的多用户配置 | code41's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -182,7 +197,7 @@ ReentrantLock可以查看当前有多少线程在查看锁">
           
           
             
-              并发锁ReentrantLock的优缺点
+              Git的多用户配置
             
           
         </h1>
@@ -191,8 +206,8 @@ ReentrantLock可以查看当前有多少线程在查看锁">
       <div class="post-meta">
         <span class="post-time">
           发表于
-          <time itemprop="dateCreated" datetime="2016-05-26T20:50:04+08:00" content="2016-05-26">
-            2016-05-26
+          <time itemprop="dateCreated" datetime="2017-12-09T19:52:18+08:00" content="2017-12-09">
+            2017-12-09
           </time>
         </span>
 
@@ -201,19 +216,7 @@ ReentrantLock可以查看当前有多少线程在查看锁">
             &nbsp; | &nbsp; 分类于
             
               <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/java/" itemprop="url" rel="index">
-                  <span itemprop="name">java</span>
-                </a>
-              </span>
-
-              
-              
-                ， 
-              
-
-            
-              <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                <a href="/categories/java/基础知识/" itemprop="url" rel="index">
+                <a href="/categories/基础知识/" itemprop="url" rel="index">
                   <span itemprop="name">基础知识</span>
                 </a>
               </span>
@@ -237,17 +240,39 @@ ReentrantLock可以查看当前有多少线程在查看锁">
       
 
       
-        <span itemprop="articleBody"><h2 id="ReentrantLock的优点"><a href="#ReentrantLock的优点" class="headerlink" title="ReentrantLock的优点"></a>ReentrantLock的优点</h2><ul>
-<li>ReentrantLock可以创建多个，对同一线程中的不同条件进行lock操作，而synchronized只能锁一个对象或者方法块。</li>
-<li>ReentrantLock可以控制线程得到锁的顺序，达到公平锁；同时也可以像synchronized一样非公平分配。</li>
-<li>ReentrantLock可以查看锁的状态，是否被锁上。</li>
-<li>ReentrantLock可以查看当前有多少线程在查看锁。</li>
+        <span itemprop="articleBody"><h2 id="Git的多用户配置"><a href="#Git的多用户配置" class="headerlink" title="Git的多用户配置"></a>Git的多用户配置</h2><ol>
+<li><p>生成多个代码库的SSH-KEY，考虑不同代码库的账户名不同，故生成私钥和公钥的时候考虑使用不同的文件名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-keygen -t rsa -C &quot;XXX@mail.com&quot;</div></pre></td></tr></table></figure>
+</li>
+<li><p>加载SSH-KEY</p>
+<ul>
+<li><p>执行ssh-add命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件</div></pre></td></tr></table></figure>
+</li>
+<li><p>可能提示失败，如“could not open a connection to your authentication agent”</p>
+</li>
+<li>出现上述情况为当前账户SSH添加权限问题，使用如下命令解决<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">eval `ssh-agent`</div><div class="line">ssh-add id_rsa_github ## id_rsa_github为上一步生成的私钥文件</div></pre></td></tr></table></figure>
+</li>
 </ul>
-<h2 id="ReentrantLock的缺点"><a href="#ReentrantLock的缺点" class="headerlink" title="ReentrantLock的缺点"></a>ReentrantLock的缺点</h2><ul>
-<li>需要引入新的包。</li>
-<li>需要自己在finally中控制锁的释放。</li>
-<li>synchronized可以作为关键字在方法声明中使用，比ReentrantLock来说减少了嵌套。</li>
+</li>
+<li><p>配置多仓库多用户配置</p>
+<ul>
+<li>在当前用户的目录的”.ssh”文件夹下添加config文件，文件地址如[~/.ssh/config]</li>
+<li><p>在config文件中添加多仓库站点的配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">Host github.com</div><div class="line">  HostName github.com ##站点地址</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_github ##私钥文件地址</div><div class="line">  User XXX1 ##用户名</div><div class="line">Host github.com</div><div class="line">  HostName github.com ##站点地址</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_github2 ##私钥文件地址</div><div class="line">  User XXX2 ##用户名</div><div class="line">Host git.coding.net</div><div class="line">  HostName git.coding.net ##站点地址</div><div class="line">  User xxx@mail.com ##用户名</div><div class="line">  PreferredAuthentications publickey ##配置登录时用什么权限认证--可设为publickey,password publickey,keyboard-interactive等</div><div class="line">  IdentityFile /Users/XXX/.ssh/id_rsa_coding ##私钥文件地址</div></pre></td></tr></table></figure>
+</li>
+<li><p>配置解读</p>
+<ul>
+<li>当前配置支持相同站点不同用户，根据提交代码的用户名自动使用不同的用户权限进行提交</li>
+<li>需要在代码所在路径下，配置当前代码使用的用户名</li>
+<li>也可以添加多个站点的配置</li>
 </ul>
+</li>
+</ul>
+</li>
+<li>校验配置，使用“ssh -T”命令，出现成功则代表配置成功<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ssh -T git@github.com ##校验github</div><div class="line">ssh -T git@git.coding.com ##校验coding.net</div></pre></td></tr></table></figure>
+</li>
+</ol>
 </span>
       
     </div>
@@ -256,15 +281,13 @@ ReentrantLock可以查看当前有多少线程在查看锁">
       
         <div class="post-tags">
           
-            <a href="/tags/java/" rel="tag">#java</a>
-          
             <a href="/tags/基础/" rel="tag">#基础</a>
           
-            <a href="/tags/并发包/" rel="tag">#并发包</a>
+            <a href="/tags/工具/" rel="tag">#工具</a>
           
-            <a href="/tags/ReentrantLock/" rel="tag">#ReentrantLock</a>
+            <a href="/tags/git/" rel="tag">#git</a>
           
-            <a href="/tags/多线程/" rel="tag">#多线程</a>
+            <a href="/tags/多用户/" rel="tag">#多用户</a>
           
         </div>
       
@@ -273,13 +296,11 @@ ReentrantLock可以查看当前有多少线程在查看锁">
         <div class="post-nav">
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/03/09/jvm-gc/" rel="prev">GC概述</a>
-            
           </div>
 
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/24/variable-of-immutable-class/" rel="next">不可变类的变量声明</a>
+              <a href="/2017/09/03/git-rebase-vs-merge/" rel="next">GIT的Rebase和Merge的区别</a>
             
           </div>
         </div>
@@ -311,7 +332,7 @@ ReentrantLock可以查看当前有多少线程在查看锁">
 
             
               <!-- 畅言评论 -->
-              <div id="SOHUCS" sid="并发锁ReentrantLock的优缺点"></div>
+              <div id="SOHUCS" sid="Git的多用户配置"></div>
               <script charset="utf-8" type="text/javascript" src="https://changyan.sohu.com/upload/changyan.js" ></script>
               <script type="text/javascript">
                 window.changyan.api.config({appid: 'cysXNh7qW', conf: 'prod_bc872bce39d564818454ac7040ac4126'});
@@ -417,7 +438,7 @@ ReentrantLock可以查看当前有多少线程在查看锁">
           <div class="post-toc">
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantLock的优点"><span class="nav-number">1.</span> <span class="nav-text">ReentrantLock的优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ReentrantLock的缺点"><span class="nav-number">2.</span> <span class="nav-text">ReentrantLock的缺点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Git的多用户配置"><span class="nav-number">1.</span> <span class="nav-text">Git的多用户配置</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator"></div>
